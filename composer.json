@@ -1,0 +1,23 @@
+{
+    "name": "jakoch/phantomjs-installer",
+    "type": "custom-installer",
+    "keywords": ["phantomjs", "headless", "binaries"],
+    "license": "MIT",
+    "version": "1.9.1",
+    "authors": [
+        {
+            "name": "Jens-André Koch",
+            "email": "jakoch@web.de"
+        }
+    ],
+    "scripts": {
+        "post-install-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ]
+    },
+    "autoload": {
+        "psr-0": {
+            "PhantomInstaller\\": "src/"
+        }
+    }
+}
