@@ -17,7 +17,7 @@ class Installer
     {
         $composer = $event->getComposer();
         $package = $composer->getPackage();
-       
+
         # get global "required" packges array to find the "phantomjs-installer" and fetch it's "version"
         $requiredPackagesArray = $package->getRequires();
         $phantomjsInstaller_PackageLink = $requiredPackagesArray['jakoch/phantomjs-installer'];
@@ -44,7 +44,7 @@ class Installer
 
         $package->setTargetDir($targetDir);
         $package->setInstallationSource('dist');
-        $package->setDistType(pathinfo($url, PATHINFO_EXTENSION) == 'zip' ?: 'tar'); // set zip, tarball
+        $package->setDistType(pathinfo($url, PATHINFO_EXTENSION) == 'zip' ? 'zip' : 'tar'); // set zip, tarball
         $package->setDistUrl($url);
 
         # Downloading the Archive
