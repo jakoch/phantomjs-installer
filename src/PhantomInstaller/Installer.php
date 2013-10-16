@@ -17,7 +17,7 @@ class Installer
     {
         $composer = $event->getComposer();
         $package = $composer->getPackage();
-       
+
         # get global "required" packges array to find the "phantomjs-installer" and fetch it's "version"
         $requiredPackagesArray = $package->getRequires();
         $phantomjsInstaller_PackageLink = $requiredPackagesArray['jakoch/phantomjs-installer'];
@@ -75,7 +75,7 @@ class Installer
         }
 
         if (self::getOS() === 'macosx') {
-            $url = 'https://phantomjs.googlecode.com/files/phantomjs-' .  $version . '--macosx.zip';
+            $url = 'https://phantomjs.googlecode.com/files/phantomjs-' .  $version . '-macosx.zip';
         }
 
         # OS unknown
@@ -99,7 +99,7 @@ class Installer
         $uname = strtolower(php_uname());
 
         if (strpos($uname, "darwin") !== false) {
-            return 'maxosx';
+            return 'macosx';
         } elseif (strpos($uname, "win") !== false) {
             return 'windows';
         } elseif (strpos($uname, "linux") !== false) {
