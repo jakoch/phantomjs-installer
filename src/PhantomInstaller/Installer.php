@@ -44,7 +44,7 @@ class Installer
 
         $package->setTargetDir($targetDir);
         $package->setInstallationSource('dist');
-        $package->setDistType(pathinfo($url, PATHINFO_EXTENSION)); // set zip, tarball
+        $package->setDistType(pathinfo($url, PATHINFO_EXTENSION) == 'zip' ?: 'tar'); // set zip, tarball
         $package->setDistUrl($url);
 
         # Downloading the Archive
@@ -117,11 +117,11 @@ class Installer
     public static function getBitSize()
     {
         if (PHP_INT_SIZE === 4) {
-            return '32';
+            return 32;
         }
 
         if (PHP_INT_SIZE === 8) {
-            return '64';
+            return 64;
         }
 
         return PHP_INT_SIZE; // 16-bit?
