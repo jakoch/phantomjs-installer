@@ -1,6 +1,10 @@
 phantomjs-installer
 ===================
 
+[![Latest Stable Version](https://poser.pugx.org/jakoch/phantomjs-installer/version.png)](https://packagist.org/packages/jakoch/phantomjs-installer)
+[![Total Downloads](https://poser.pugx.org/jakoch/phantomjs-installer/d/total.png)](https://packagist.org/packages/jakoch/phantomjs-installer)
+[![Build Status](https://travis-ci.org/jakoch/phantomjs-installer.png)](https://travis-ci.org/jakoch/phantomjs-installer)
+
 A Composer package which installs the PhantomJS binary (Linux, Windows, Mac) into `/bin` of your project.
 
 ## Installation
