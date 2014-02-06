@@ -10,6 +10,9 @@
             "email": "jakoch@web.de"
         }
     ],
+    "require": {
+        "ext-openssl": "*"
+    },
     "scripts": {
         "post-install-cmd": [
             "PhantomInstaller\\Installer::installPhantomJS"
