@@ -14,10 +14,14 @@ To install PhantomJS as a local, per-project dependency to your project, simply 
 ```json
 {
     "require": {
-        "jakoch/phantomjs-installer": "1.9.1"
+        "jakoch/phantomjs-installer": "1.9.7"
     }
 }
 ```
+
+The version number of the package specifies the PhantomJS version!
+"dev-master" is "v1.9.7".
+The download source used is: https://bitbucket.org/ariya/phantomjs/downloads/
 
 Currently Composer does not pass events to the handler scripts of dependencies.
 You might execute the installer a) manually or b) by adding the following additional settings to your `composer.json`:

@@ -25,7 +25,7 @@ class Installer
 
         # fallback to a harccoded version number, if "dev-master" was set
         if($version === 'dev-master') {
-            $version = '1.9.1';
+            $version = '1.9.7';
         }
 
         #$io = $event->getIO();
@@ -60,22 +60,25 @@ class Installer
     {
         $url = false;
 
+        // old versions up to v1.9.2 were hosted on https://phantomjs.googlecode.com/files/
+        // newer versions are hosted on https://bitbucket.org/ariya/phantomjs/downloads/
+
         if (self::getOS() === 'windows') {
-            $url = 'https://phantomjs.googlecode.com/files/phantomjs-' . $version . '-windows.zip';
+            $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' . $version . '-windows.zip';
         }
 
         if (self::getOS() === 'linux') {
             if (self::getBitSize() === 32) {
-                $url = 'https://phantomjs.googlecode.com/files/phantomjs-' .  $version . '-linux-i686.tar.bz2';
+                $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' .  $version . '-linux-i686.tar.bz2';
             }
 
             if (self::getBitSize() === 64) {
-                $url = 'https://phantomjs.googlecode.com/files/phantomjs-' .  $version . '-linux-x86_64.tar.bz2';
+                $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' .  $version . '-linux-x86_64.tar.bz2';
             }
         }
 
         if (self::getOS() === 'macosx') {
-            $url = 'https://phantomjs.googlecode.com/files/phantomjs-' .  $version . '-macosx.zip';
+            $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' .  $version . '-macosx.zip';
         }
 
         # OS unknown
