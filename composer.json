@@ -1,5 +1,6 @@
 {
     "name": "jakoch/phantomjs-installer",
+    "description": "A Composer package which installs the PhantomJS binary (Linux, Windows, Mac) into `/bin` of your project.",
     "type": "custom-installer",
     "keywords": ["phantomjs", "headless", "binaries"],
     "license": "MIT",
