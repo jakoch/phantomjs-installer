@@ -36,7 +36,7 @@ class Installer
 
         # Create Composer In-Memory Package
 
-        $targetDir = './bin';
+        $targetDir = './vendor/jakoch/phantomjs';
 
         $versionParser = new VersionParser();
         $normVersion = $versionParser->normalize($version);
@@ -51,6 +51,38 @@ class Installer
 
         $downloadManager = $event->getComposer()->getDownloadManager();
         $downloadManager->download($package, $targetDir, false);
+
+        # Copy PhantomJS to "bin" folder
+
+        self::recursiveCopy($targetDir, './bin');
+    }
+
+    /**
+     * Recursive copy (with PHP default "overwrite on copy").
+     *
+     * @param $source Source folder.
+     * @param $dest Destination folder.
+     */
+    public static function recursiveCopy($source, $dest)
+    {
+        if(is_dir($source) === true) {
+            $dir = opendir($source);
+            while($file = readdir($dir)) {
+                if($file !== '.' && $file !== '..') {
+                    if(is_dir($source.'/'.$file) === true) {
+                        if(is_dir($dest.'/'.$file) === false) {
+                            mkdir($dest.'/'.$file);
+                        }
+                        self::recursiveCopy($source.'/'.$file, $dest.'/'.$file);
+                    } else {
+                        copy($source.'/'.$file, $dest.'/'.$file);
+                    }
+                }
+            }
+            closedir($dir);
+        } else {
+            copy($source, $dest);
+        }
     }
 
     /**
