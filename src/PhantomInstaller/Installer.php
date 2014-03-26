@@ -18,12 +18,12 @@ class Installer
         $composer = $event->getComposer();
         $package = $composer->getPackage();
 
-        # get global "required" packges array to find the "phantomjs-installer" and fetch it's "version"
+        # get global "required" packages array, to find the "phantomjs-installer" and fetch it's "version"
         $requiredPackagesArray = $package->getRequires();
         $phantomjsInstaller_PackageLink = $requiredPackagesArray['jakoch/phantomjs-installer'];
         $version = $phantomjsInstaller_PackageLink->getPrettyConstraint();
 
-        # fallback to a harccoded version number, if "dev-master" was set
+        # fallback to a hardcoded version number, if "dev-master" was set
         if($version === 'dev-master') {
             $version = '1.9.7';
         }
@@ -34,7 +34,7 @@ class Installer
         $name = self::PHANTOMJS_NAME;
         $url = self::getURL($version);
 
-        # Creating Composer In-Memory Package
+        # Create Composer In-Memory Package
 
         $targetDir = './bin';
 
@@ -47,7 +47,7 @@ class Installer
         $package->setDistType(pathinfo($url, PATHINFO_EXTENSION) == 'zip' ? 'zip' : 'tar'); // set zip, tarball
         $package->setDistUrl($url);
 
-        # Downloading the Archive
+        # Download the Archive
 
         $downloadManager = $event->getComposer()->getDownloadManager();
         $downloadManager->download($package, $targetDir, false);
@@ -59,25 +59,28 @@ class Installer
     public static function getURL($version)
     {
         $url = false;
+        $os = self::getOS();
 
         // old versions up to v1.9.2 were hosted on https://phantomjs.googlecode.com/files/
         // newer versions are hosted on https://bitbucket.org/ariya/phantomjs/downloads/
 
-        if (self::getOS() === 'windows') {
+        if ($os === 'windows') {
             $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' . $version . '-windows.zip';
         }
 
-        if (self::getOS() === 'linux') {
-            if (self::getBitSize() === 32) {
+        if ($os === 'linux') {
+            $bitsize = self::getBitSize();
+
+            if ($bitsize === 32) {
                 $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' .  $version . '-linux-i686.tar.bz2';
             }
 
-            if (self::getBitSize() === 64) {
+            if ($bitsize === 64) {
                 $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' .  $version . '-linux-x86_64.tar.bz2';
             }
         }
 
-        if (self::getOS() === 'macosx') {
+        if ($os === 'macosx') {
             $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' .  $version . '-macosx.zip';
         }
 
