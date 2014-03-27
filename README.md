@@ -50,7 +50,10 @@ The package is fetched by composer and stored into `./vendor/jakoch/phantomjs-in
 It contains only one file the `PhantomInstaller\\Installer`.
 
 2. **Platform-specific download of PhantomJS**
-The `PhantomInstaller\\Installer` is run as a "post-install-cmd". That's way you need the "scripts" section in your "composer.json". The installer creates a new composer in-memory package "phantomjs", detects your OS and downloads the correct Phantom version to the folder `./vendor/jakoch/phantomjs`. 
+The `PhantomInstaller\\Installer` is run as a "post-install-cmd". That's way you need the "scripts" section in your "composer.json".
+The installer creates a new composer in-memory package "phantomjs",
+detects your OS and downloads the correct Phantom version to the folder `./vendor/jakoch/phantomjs`.
+All PhantomJS files reside there, especially the `examples`.
 
 3. **Installation into `/bin` folder**
-The content is copied from `./vendor/jakoch/phantomjs` to your `/bin` folder, overwriting existing Phantom files, but leaving the rest of your `/bin` content untouched.
+The binary is then copied from `./vendor/jakoch/phantomjs` to your `/bin` folder.
