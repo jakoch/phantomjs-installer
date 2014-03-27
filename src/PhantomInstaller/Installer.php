@@ -48,10 +48,10 @@ class Installer
         //$io->write('<info>Fetching PhantomJS v'.$version.'</info>');
 
         $downloadManager = $event->getComposer()->getDownloadManager();
-        $downloadManager->download($package, $targetDir, false);
+        $downloadManager->download($package, self::PHANTOMJS_TARGETDIR, false);
 
         // Copy all PhantomJS files to "bin" folder
-        // self::recursiveCopy($targetDir, './bin');
+        // self::recursiveCopy(self::PHANTOMJS_TARGETDIR, './bin');
 
         // Copy only the PhantomJS binary to the "bin" folder
 
@@ -67,9 +67,9 @@ class Installer
         $os = self::getOS();
 
         if ($os === 'windows') { // no bin folder on windows and suffix: .exe
-            copy('./vendor/jakoch/phantomjs/phantomjs.exe', './bin/phantomjs.exe');
+            copy(self::PHANTOMJS_TARGETDIR . '/phantomjs.exe', './bin/phantomjs.exe');
         } elseif ($os === 'linux' or $os === 'macosx') {
-            copy('./vendor/jakoch/phantomjs/bin/phantomjs', './bin/phantomjs');
+            copy(self::PHANTOMJS_TARGETDIR . '/bin/phantomjs', './bin/phantomjs');
         }
     }
 
