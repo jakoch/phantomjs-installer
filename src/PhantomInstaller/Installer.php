@@ -64,6 +64,10 @@ class Installer
      */
     public static function copyPhantomJsBinaryToBinFolder()
     {
+        if(is_dir('./bin') === false) {
+            mkdir('./bin');
+        }
+
         $os = self::getOS();
 
         if ($os === 'windows') { // no bin folder on windows and suffix: .exe
