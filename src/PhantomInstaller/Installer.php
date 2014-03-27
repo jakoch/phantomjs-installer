@@ -9,6 +9,7 @@ use Composer\Package\Version\VersionParser;
 class Installer
 {
     const PHANTOMJS_NAME = 'PhantomJS';
+    const PHANTOMJS_TARGETDIR = './vendor/jakoch/phantomjs';
 
     /**
      * Operating system dependend installation of PhantomJS
@@ -18,47 +19,62 @@ class Installer
         $composer = $event->getComposer();
         $package = $composer->getPackage();
 
-        # get global "required" packages array, to find the "phantomjs-installer" and fetch it's "version"
+        // get global "required" packages array, to find the "phantomjs-installer" and fetch it's "version"
         $requiredPackagesArray = $package->getRequires();
         $phantomjsInstaller_PackageLink = $requiredPackagesArray['jakoch/phantomjs-installer'];
         $version = $phantomjsInstaller_PackageLink->getPrettyConstraint();
 
-        # fallback to a hardcoded version number, if "dev-master" was set
+        // fallback to a hardcoded version number, if "dev-master" was set
         if($version === 'dev-master') {
             $version = '1.9.7';
         }
 
-        #$io = $event->getIO();
-        #$io->write('<info>Fetching PhantomJS v'.$version.'</info>');
-
-        $name = self::PHANTOMJS_NAME;
         $url = self::getURL($version);
 
-        # Create Composer In-Memory Package
-
-        $targetDir = './vendor/jakoch/phantomjs';
+        // Create Composer In-Memory Package
 
         $versionParser = new VersionParser();
         $normVersion = $versionParser->normalize($version);
-        $package = new Package($name, $normVersion, $version);
+        $package = new Package(self::PHANTOMJS_NAME, $normVersion, $version);
 
-        $package->setTargetDir($targetDir);
+        $package->setTargetDir(self::PHANTOMJS_TARGETDIR);
         $package->setInstallationSource('dist');
-        $package->setDistType(pathinfo($url, PATHINFO_EXTENSION) == 'zip' ? 'zip' : 'tar'); // set zip, tarball
+        $package->setDistType(pathinfo($url, PATHINFO_EXTENSION) === 'zip' ? 'zip' : 'tar'); // set zip, tarball
         $package->setDistUrl($url);
 
-        # Download the Archive
+        // Download the Archive
+
+        //$io = $event->getIO();
+        //$io->write('<info>Fetching PhantomJS v'.$version.'</info>');
 
         $downloadManager = $event->getComposer()->getDownloadManager();
         $downloadManager->download($package, $targetDir, false);
 
-        # Copy PhantomJS to "bin" folder
+        // Copy all PhantomJS files to "bin" folder
+        // self::recursiveCopy($targetDir, './bin');
 
-        self::recursiveCopy($targetDir, './bin');
+        // Copy only the PhantomJS binary to the "bin" folder
+
+        self::copyPhantomJsBinaryToBinFolder();
     }
 
     /**
-     * Recursive copy (with PHP default "overwrite on copy").
+     * Copies the PhantomJs binary to the bin folder.
+     * Takes different "folder structure" of the archives and different "binary file names" into account.
+     */
+    public static function copyPhantomJsBinaryToBinFolder()
+    {
+        $os = self::getOS();
+
+        if ($os === 'windows') { // no bin folder on windows and suffix: .exe
+            copy('./vendor/jakoch/phantomjs/phantomjs.exe', './bin/phantomjs.exe');
+        } elseif ($os === 'linux' or $os === 'macosx') {
+            copy('./vendor/jakoch/phantomjs/bin/phantomjs', './bin/phantomjs');
+        }
+    }
+
+    /**
+     * Recursive copy of files and folders (with PHP default "overwrite on copy").
      *
      * @param $source Source folder.
      * @param $dest Destination folder.
