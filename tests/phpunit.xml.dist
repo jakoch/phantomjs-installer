@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- http://www.phpunit.de/manual/current/en/appendixes.configuration.html -->
+<phpunit
+    backupGlobals               = "false"
+    backupStaticAttributes      = "false"
+    colors                      = "true"
+    convertErrorsToExceptions   = "true"
+    convertNoticesToExceptions  = "true"
+    convertWarningsToExceptions = "true"
+    processIsolation            = "false"
+    stopOnFailure               = "false"
+    strict                      = "true"
+    syntaxCheck                 = "false"
+    verbose                     = "true">
+
+  <testsuite name="PhantomJS Installer - Test Suite">
+     <directory suffix=".php">./</directory>
+  </testsuite>
+
+  <logging>
+    <log type="coverage-text" target="php://stdout" showOnlySummary="false" />
+  </logging>
+
+</phpunit>
