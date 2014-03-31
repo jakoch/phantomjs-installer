@@ -83,7 +83,7 @@ class Installer
      * @param $source Source folder.
      * @param $dest Destination folder.
      */
-    public static function recursiveCopy($source, $dest)
+    /*public static function recursiveCopy($source, $dest)
     {
         if(is_dir($source) === true) {
             $dir = opendir($source);
@@ -103,7 +103,7 @@ class Installer
         } else {
             copy($source, $dest);
         }
-    }
+    }*/
 
     /**
      * Returns the URL of the PhantomJS distribution for the installing OS.
