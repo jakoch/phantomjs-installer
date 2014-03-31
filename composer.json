@@ -14,11 +14,6 @@
     "require": {
         "ext-openssl": "*"
     },
-    "scripts": {
-        "post-install-cmd": [
-            "PhantomInstaller\\Installer::installPhantomJS"
-        ]
-    },
     "autoload": {
         "psr-0": {
             "PhantomInstaller\\": "src/"
