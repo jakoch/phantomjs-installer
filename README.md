@@ -39,7 +39,7 @@ You might execute the installer a) manually or b) by adding the following additi
 }
 ```
 
-Now, assuming that the scripts section is set up as required, PhantomJS binaries
+Now, assuming that the scripts section is set up as required, the PhantomJS binary
 will be installed into the `/bin` folder and updated alongside the project's Composer dependencies.
 
 ## How does this work internally?
