@@ -70,10 +70,17 @@ class Installer
 
         $os = self::getOS();
 
+        $sourceName = '/bin/phantomjs';
+        $targetName = './bin/phantomjs';
+
         if ($os === 'windows') { // no bin folder on windows and suffix: .exe
-            copy(self::PHANTOMJS_TARGETDIR . '/phantomjs.exe', './bin/phantomjs.exe');
-        } elseif ($os === 'linux' or $os === 'macosx') {
-            copy(self::PHANTOMJS_TARGETDIR . '/bin/phantomjs', './bin/phantomjs');
+            $sourceName = '/phantomjs.exe';
+            $targetName = './bin/phantomjs.exe';
+        }
+
+        if ($os !== 'unknown') {
+            copy(self::PHANTOMJS_TARGETDIR . $sourceName, $targetName);
+            chmod($targetName, 0755);
         }
     }
 
