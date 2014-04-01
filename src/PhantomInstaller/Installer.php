@@ -80,6 +80,7 @@ class Installer
 
         if ($os !== 'unknown') {
             copy(self::PHANTOMJS_TARGETDIR . $sourceName, $targetName);
+            chmod($targetName, 0755);
         }
     }
 
