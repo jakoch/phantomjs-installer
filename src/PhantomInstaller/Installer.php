@@ -1,10 +1,10 @@
 <?php
 namespace PhantomInstaller;
 
-use Composer\Composer;
 use Composer\Script\Event;
 
 use Composer\Package\Package;
+use Composer\Package\RootPackageInterface;
 use Composer\Package\Version\VersionParser;
 
 class Installer
@@ -19,25 +19,21 @@ class Installer
     public static function installPhantomJS(Event $event)
     {
         $composer = $event->getComposer();
-        $package = $composer->getPackage();
-
-        // get global "required" packages array, to find the "phantomjs-installer" and fetch it's "version"
-        $requiredPackagesArray = $package->getRequires();
-        $phantomjsInstaller_PackageLink = $requiredPackagesArray['jakoch/phantomjs-installer'];
-        $version = $phantomjsInstaller_PackageLink->getPrettyConstraint();
+        $requiredVersion = self::getRequiredVersion($composer->getPackage());
 
         // fallback to a hardcoded version number, if "dev-master" was set
-        if ($version === 'dev-master') {
-            $version = '1.9.7';
+
+        if ($requiredVersion === 'dev-master') {
+            $requiredVersion = '1.9.7';
         }
 
-        $url = self::getURL($version);
+        $url = self::getURL($requiredVersion);
 
         // Create Composer In-Memory Package
 
         $versionParser = new VersionParser();
-        $normVersion = $versionParser->normalize($version);
-        $package = new Package(self::PHANTOMJS_NAME, $normVersion, $version);
+        $normVersion = $versionParser->normalize($requiredVersion);
+        $package = new Package(self::PHANTOMJS_NAME, $normVersion, $requiredVersion);
 
         $package->setTargetDir(self::PHANTOMJS_TARGETDIR);
         $package->setInstallationSource('dist');
@@ -49,7 +45,7 @@ class Installer
         //$io = $event->getIO();
         //$io->write('<info>Fetching PhantomJS v'.$version.'</info>');
 
-        $downloadManager = $event->getComposer()->getDownloadManager();
+        $downloadManager = $composer->getDownloadManager();
         $downloadManager->download($package, self::PHANTOMJS_TARGETDIR, false);
 
         // Copy all PhantomJS files to "bin" folder
@@ -58,6 +54,24 @@ class Installer
         // Copy only the PhantomJS binary to the "bin" folder
 
         self::copyPhantomJsBinaryToBinFolder($composer);
+    }
+
+    /**
+     * Returns the version for the given package either from the "require" or "require-dev" packages array.
+     *
+     * @param RootPackageInterface $package
+     * @param string $packageName
+     * @throws \RuntimeException
+     * @return mixed
+     */
+    public static function getRequiredVersion(RootPackageInterface $package, $packageName = 'jakoch/phantomjs-installer')
+    {
+        foreach (array($package->getRequires(), $package->getDevRequires()) as $requiredPackages) {
+            if (isset($requiredPackages[$packageName])) {
+                return $requiredPackages[$packageName]->getPrettyConstraint();
+            }
+        }
+        throw new \RuntimeException('Can not determine required version of ' . $packageName);
     }
 
     /**
