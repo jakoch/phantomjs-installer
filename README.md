@@ -35,7 +35,7 @@ For a development dependency, change `require` to `require-dev`:
 }
 ```
 
-By setting the Composers configuration directive `bin-dir`, the vendor binaries will be installed into the defined folder.
+By setting the Composer configuration directive `bin-dir`, the [vendor binaries](https://getcomposer.org/doc/articles/vendor-binaries.md#can-vendor-binaries-be-installed-somewhere-other-than-vendor-bin-) will be installed into the defined folder.
 **Important! Composer will install the binaries into `vendor\bin`, if you do not set the `bin-dir` to `bin`.**
 
 The version number of the package specifies the PhantomJS version!
