@@ -1,6 +1,7 @@
 <?php
 namespace PhantomInstaller;
 
+use Composer\Composer;
 use Composer\Script\Event;
 
 use Composer\Package\Package;
@@ -9,6 +10,7 @@ use Composer\Package\Version\VersionParser;
 class Installer
 {
     const PHANTOMJS_NAME = 'PhantomJS';
+
     const PHANTOMJS_TARGETDIR = './vendor/jakoch/phantomjs';
 
     /**
@@ -25,7 +27,7 @@ class Installer
         $version = $phantomjsInstaller_PackageLink->getPrettyConstraint();
 
         // fallback to a hardcoded version number, if "dev-master" was set
-        if($version === 'dev-master') {
+        if ($version === 'dev-master') {
             $version = '1.9.7';
         }
 
@@ -55,27 +57,28 @@ class Installer
 
         // Copy only the PhantomJS binary to the "bin" folder
 
-        self::copyPhantomJsBinaryToBinFolder();
+        self::copyPhantomJsBinaryToBinFolder($composer);
     }
 
     /**
      * Copies the PhantomJs binary to the bin folder.
      * Takes different "folder structure" of the archives and different "binary file names" into account.
      */
-    public static function copyPhantomJsBinaryToBinFolder()
+    public static function copyPhantomJsBinaryToBinFolder(Composer $composer)
     {
-        if(is_dir('./bin') === false) {
-            mkdir('./bin');
+        $composerBinDir = $composer->getConfig()->get('bin-dir');
+        if (!is_dir($composerBinDir)) {
+            mkdir($composerBinDir);
         }
 
         $os = self::getOS();
 
         $sourceName = '/bin/phantomjs';
-        $targetName = './bin/phantomjs';
+        $targetName = $composerBinDir . '/phantomjs';
 
         if ($os === 'windows') { // no bin folder on windows and suffix: .exe
             $sourceName = '/phantomjs.exe';
-            $targetName = './bin/phantomjs.exe';
+            $targetName = $composerBinDir . '/phantomjs.exe';
         }
 
         if ($os !== 'unknown') {
@@ -131,20 +134,20 @@ class Installer
             $bitsize = self::getBitSize();
 
             if ($bitsize === 32) {
-                $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' .  $version . '-linux-i686.tar.bz2';
+                $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' . $version . '-linux-i686.tar.bz2';
             }
 
             if ($bitsize === 64) {
-                $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' .  $version . '-linux-x86_64.tar.bz2';
+                $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' . $version . '-linux-x86_64.tar.bz2';
             }
         }
 
         if ($os === 'macosx') {
-            $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' .  $version . '-macosx.zip';
+            $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' . $version . '-macosx.zip';
         }
 
         # OS unknown
-        if($url === false) {
+        if ($url === false) {
             throw new \RuntimeException(
                 'The Installer could not select a PhantomJS package for this OS.
                 Please install PhantomJS manually into the /bin folder of your project.'
