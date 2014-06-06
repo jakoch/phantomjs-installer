@@ -32,7 +32,7 @@ To install PhantomJS as a local, per-project dependency to your project, simply 
 }
 ```
 
-For a development dependency, change `require` to `require-dev`:
+For a development dependency, change `require` to `require-dev`.
 
 The version number of the package specifies the PhantomJS version!
 "dev-master" is "v1.9.7".
