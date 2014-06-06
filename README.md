@@ -16,9 +16,27 @@ To install PhantomJS as a local, per-project dependency to your project, simply 
 {
     "require": {
         "jakoch/phantomjs-installer": "1.9.7"
+    },
+    "config": {
+        "bin-dir": "bin"
     }
 }
 ```
+For a development dependency, change `require` to `require-dev`:
+
+```json
+{
+    "require-dev": {
+        "jakoch/phantomjs-installer": "1.9.7"
+    },
+    "config": {
+        "bin-dir": "bin"
+    }
+}
+```
+
+By setting the Composers configuration directive `bin-dir`, the vendor binaries will be installed into the defined folder.
+**Important! Composer will install the binaries into `vendor\bin`, if you do not set the `bin-dir` to `bin`.**
 
 The version number of the package specifies the PhantomJS version!
 "dev-master" is "v1.9.7".
@@ -57,4 +75,4 @@ detects your OS and downloads the correct Phantom version to the folder `./vendo
 All PhantomJS files reside there, especially the `examples`.
 
 3. **Installation into `/bin` folder**
-The binary is then copied from `./vendor/jakoch/phantomjs` to your `/bin` folder.
+The binary is then copied from `./vendor/jakoch/phantomjs` to your composer configured `bin-dir` folder.
