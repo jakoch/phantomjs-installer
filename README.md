@@ -39,7 +39,7 @@ The version number of the package specifies the PhantomJS version!
 The download source used is: https://bitbucket.org/ariya/phantomjs/downloads/
 
 By setting the Composer configuration directive `bin-dir`, the [vendor binaries](https://getcomposer.org/doc/articles/vendor-binaries.md#can-vendor-binaries-be-installed-somewhere-other-than-vendor-bin-) will be installed into the defined folder.
-**Important! Composer will install the binaries into `vendor\bin`, if you do not set the `bin-dir` to `bin`.**
+**Important! Composer will install the binaries into `vendor\bin` by default.**
 
 The `scripts` section is necessary, because currently Composer does not pass events to the handler scripts of dependencies. If you leave it away, you might execute the installer manually.
 
