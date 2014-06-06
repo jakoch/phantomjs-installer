@@ -12,6 +12,7 @@ A Composer package which installs the PhantomJS binary (Linux, Windows, Mac) int
 
 To install PhantomJS as a local, per-project dependency to your project, simply add a dependency on `jakoch/phantomjs-installer` to your project's `composer.json` file.
 
+
 ```json
 {
     "require": {
@@ -19,34 +20,7 @@ To install PhantomJS as a local, per-project dependency to your project, simply 
     },
     "config": {
         "bin-dir": "bin"
-    }
-}
-```
-For a development dependency, change `require` to `require-dev`:
-
-```json
-{
-    "require-dev": {
-        "jakoch/phantomjs-installer": "1.9.7"
     },
-    "config": {
-        "bin-dir": "bin"
-    }
-}
-```
-
-By setting the Composer configuration directive `bin-dir`, the [vendor binaries](https://getcomposer.org/doc/articles/vendor-binaries.md#can-vendor-binaries-be-installed-somewhere-other-than-vendor-bin-) will be installed into the defined folder.
-**Important! Composer will install the binaries into `vendor\bin`, if you do not set the `bin-dir` to `bin`.**
-
-The version number of the package specifies the PhantomJS version!
-"dev-master" is "v1.9.7".
-The download source used is: https://bitbucket.org/ariya/phantomjs/downloads/
-
-Currently Composer does not pass events to the handler scripts of dependencies.
-You might execute the installer a) manually or b) by adding the following additional settings to your `composer.json`:
-
-```json
-{
     "scripts": {
         "post-install-cmd": [
             "PhantomInstaller\\Installer::installPhantomJS"
@@ -57,6 +31,17 @@ You might execute the installer a) manually or b) by adding the following additi
     }
 }
 ```
+
+For a development dependency, change `require` to `require-dev`:
+
+The version number of the package specifies the PhantomJS version!
+"dev-master" is "v1.9.7".
+The download source used is: https://bitbucket.org/ariya/phantomjs/downloads/
+
+By setting the Composer configuration directive `bin-dir`, the [vendor binaries](https://getcomposer.org/doc/articles/vendor-binaries.md#can-vendor-binaries-be-installed-somewhere-other-than-vendor-bin-) will be installed into the defined folder.
+**Important! Composer will install the binaries into `vendor\bin`, if you do not set the `bin-dir` to `bin`.**
+
+The `scripts` section is necessary, because currently Composer does not pass events to the handler scripts of dependencies. If you leave it away, you might execute the installer manually.
 
 Now, assuming that the scripts section is set up as required, the PhantomJS binary
 will be installed into the `/bin` folder and updated alongside the project's Composer dependencies.
