@@ -2,6 +2,7 @@
 namespace PhantomInstaller;
 
 use Composer\Script\Event;
+use Composer\Composer;
 
 use Composer\Package\Package;
 use Composer\Package\RootPackageInterface;
