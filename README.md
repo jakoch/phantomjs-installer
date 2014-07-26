@@ -35,7 +35,9 @@ To install PhantomJS as a local, per-project dependency to your project, simply 
 For a development dependency, change `require` to `require-dev`.
 
 The version number of the package specifies the PhantomJS version!
-"dev-master" is "v1.9.7".
+If you specify "dev-master" the version "1.9.7" will be fetched.
+Do not use "dev-master#commit-ref". Explicit commit references for dev versions are not supported.
+
 The download source used is: https://bitbucket.org/ariya/phantomjs/downloads/
 
 By setting the Composer configuration directive `bin-dir`, the [vendor binaries](https://getcomposer.org/doc/articles/vendor-binaries.md#can-vendor-binaries-be-installed-somewhere-other-than-vendor-bin-) will be installed into the defined folder.
