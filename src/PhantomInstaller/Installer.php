@@ -20,22 +20,17 @@ class Installer
     public static function installPhantomJS(Event $event)
     {
         $composer = $event->getComposer();
-        $requiredVersion = self::getRequiredVersion($composer->getPackage());
 
-        // fallback to a hardcoded version number, if "dev-master" was set
+        $version = self::getVersion($composer);
 
-        if ($requiredVersion === 'dev-master') {
-            $requiredVersion = '1.9.7';
-        }
-
-        $url = self::getURL($requiredVersion);
+        $url = self::getURL($version);
 
         // Create Composer In-Memory Package
 
         $versionParser = new VersionParser();
-        $normVersion = $versionParser->normalize($requiredVersion);
-        $package = new Package(self::PHANTOMJS_NAME, $normVersion, $requiredVersion);
+        $normVersion = $versionParser->normalize($version);
 
+        $package = new Package(self::PHANTOMJS_NAME, $normVersion, $version);
         $package->setTargetDir(self::PHANTOMJS_TARGETDIR);
         $package->setInstallationSource('dist');
         $package->setDistType(pathinfo($url, PATHINFO_EXTENSION) === 'zip' ? 'zip' : 'tar'); // set zip, tarball
@@ -55,6 +50,46 @@ class Installer
         // Copy only the PhantomJS binary to the "bin" folder
 
         self::copyPhantomJsBinaryToBinFolder($composer);
+    }
+
+    /**
+     * Returns the PhantomJS version number.
+     *
+     * Firstly, we search for a version number in the local repository,
+     * secondly, in the root package.
+     * A version specification of "dev-master#<commit-reference>" is disallowed.
+     *
+     * @param Composer $composer
+     * @return string $version Version
+     */
+    public static function getVersion($composer)
+    {
+        $packages = $composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
+
+        foreach($packages as $package) {
+            if($package->getName() === 'jakoch/phantomjs-installer') {
+                $version = $package->getPrettyVersion();
+            }
+        }
+
+        // version was not found in the local repository, let's take a look at the root package
+        if($version == null) {
+            $version = self::getRequiredVersion($composer->getPackage());
+        }
+
+        // disallow dev-master#<commit-reference>
+        if(false !== strpos($version, 'dev-master#')) {
+            throw new \RuntimeException(
+                'You specified dev-master#<commit-reference>. This is not supported by "jakoch/phantomjs-installer". Use "dev-master" or a version number.'
+            );
+        }
+
+        // fallback to a hardcoded version number, if "dev-master" was set
+        if ($version === 'dev-master') {
+            $version = '1.9.7';
+        }
+
+        return $version;
     }
 
     /**
@@ -132,6 +167,9 @@ class Installer
 
     /**
      * Returns the URL of the PhantomJS distribution for the installing OS.
+     *
+     * @param string $version
+     * @return string Download URL
      */
     public static function getURL($version)
     {
