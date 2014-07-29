@@ -36,7 +36,7 @@ For a development dependency, change `require` to `require-dev`.
 
 The version number of the package specifies the PhantomJS version!
 If you specify "dev-master" the version "1.9.7" will be fetched.
-Do not use "dev-master#commit-ref". Explicit commit references for dev versions are not supported.
+If you specify a explicit commit reference with a version, e.g. "dev-master#commit-ref as [version]", then [version] will be used.
 
 The download source used is: https://bitbucket.org/ariya/phantomjs/downloads/
 

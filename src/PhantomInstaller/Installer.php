@@ -77,11 +77,9 @@ class Installer
             $version = self::getRequiredVersion($composer->getPackage());
         }
 
-        // disallow dev-master#<commit-reference>
-        if(false !== strpos($version, 'dev-master#')) {
-            throw new \RuntimeException(
-                'You specified dev-master#<commit-reference>. This is not supported by "jakoch/phantomjs-installer". Use "dev-master" or a version number.'
-            );
+        // grab version from commit-reference, e.g. "dev-master#<commit-ref> as version"
+        if(preg_match('/dev-master#(?:.*)(\d.\d.\d)/i', $version, $matches)) {
+            $version = $matches[1];
         }
 
         // fallback to a hardcoded version number, if "dev-master" was set
