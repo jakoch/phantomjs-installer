@@ -5,10 +5,10 @@
  *
  * Copyright (c) 2013-2014 Jens-André Koch <jakoch@web.de>
  *
- * The content is released under the MIT License. Please view 
+ * The content is released under the MIT License. Please view
  * the LICENSE file that was distributed with this source code.
  */
- 
+
 namespace PhantomInstaller;
 
 use Composer\Script\Event;
@@ -94,7 +94,7 @@ class Installer
 
         // fallback to a hardcoded version number, if "dev-master" was set
         if ($version === 'dev-master') {
-            $version = '1.9.7';
+            $version = '1.9.8';
         }
 
         return $version;
