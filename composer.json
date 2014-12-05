@@ -4,7 +4,7 @@
     "type": "custom-installer",
     "keywords": ["phantomjs", "headless", "binaries"],
     "license": "MIT",
-    "version": "1.9.7",
+    "version": "1.9.8",
     "authors": [
         {
             "name": "Jens-André Koch",
