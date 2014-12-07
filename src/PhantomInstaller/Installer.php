@@ -151,34 +151,6 @@ class Installer
     }
 
     /**
-     * Recursive copy of files and folders (with PHP default "overwrite on copy").
-     *
-     * @param $source Source folder.
-     * @param $dest Destination folder.
-     */
-    /*public static function recursiveCopy($source, $dest)
-    {
-        if(is_dir($source) === true) {
-            $dir = opendir($source);
-            while($file = readdir($dir)) {
-                if($file !== '.' && $file !== '..') {
-                    if(is_dir($source.'/'.$file) === true) {
-                        if(is_dir($dest.'/'.$file) === false) {
-                            mkdir($dest.'/'.$file);
-                        }
-                        self::recursiveCopy($source.'/'.$file, $dest.'/'.$file);
-                    } else {
-                        copy($source.'/'.$file, $dest.'/'.$file);
-                    }
-                }
-            }
-            closedir($dir);
-        } else {
-            copy($source, $dest);
-        }
-    }*/
-
-    /**
      * Returns the URL of the PhantomJS distribution for the installing OS.
      *
      * @param string $version
