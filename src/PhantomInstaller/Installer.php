@@ -86,17 +86,17 @@ class Installer
         if($version == null) {
             $version = self::getRequiredVersion($composer->getPackage());
         }
-        
+
         // fallback to a hardcoded version number, if "dev-master" was set
         if ($version === 'dev-master') {
-            return '1.9.8';
+            return '2.0.0';
         }
 
         // grab version from commit-reference, e.g. "dev-master#<commit-ref> as version"
         if(preg_match('/dev-master#(?:.*)(\d.\d.\d)/i', $version, $matches)) {
             return $matches[1];
         }
-        
+
         // grab version from a git version tag with a patch level, like "1.9.8-2"
         if(preg_match('/(\d.\d.\d)(?:(?:-\d)?)/i', $version, $matches)) {
             return $matches[1];
