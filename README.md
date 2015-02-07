@@ -16,7 +16,7 @@ To install PhantomJS as a local, per-project dependency to your project, simply 
 ```json
 {
     "require": {
-        "jakoch/phantomjs-installer": "1.9.8"
+        "jakoch/phantomjs-installer": "2.0.0"
     },
     "config": {
         "bin-dir": "bin"
@@ -35,7 +35,7 @@ To install PhantomJS as a local, per-project dependency to your project, simply 
 For a development dependency, change `require` to `require-dev`.
 
 The version number of the package specifies the PhantomJS version!
-If you specify "dev-master" the version "1.9.8" will be fetched.
+If you specify "dev-master" the version "2.0.0" will be fetched.
 If you specify a explicit commit reference with a version, e.g. "dev-master#commit-ref as [version]", then [version] will be used.
 
 The download source used is: https://bitbucket.org/ariya/phantomjs/downloads/
