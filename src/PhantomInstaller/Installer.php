@@ -139,9 +139,17 @@ class Installer
         $sourceName = '/bin/phantomjs';
         $targetName = $composerBinDir . '/phantomjs';
 
-        if ($os === 'windows') { // no bin folder on windows and suffix: .exe
-            $sourceName = '/phantomjs.exe';
-            $targetName = $composerBinDir . '/phantomjs.exe';
+        if ($os === 'windows') {
+            // suffix is always: .exe
+
+            // old versions up to v1.9.8 have a different release folder structure.
+            if(is_file(self::PHANTOMJS_TARGETDIR . '/phantomjs.exe')) {
+                $sourceName = '/phantomjs.exe'; // no bin folder, exe in root
+            } else {
+                $sourceName = $sourceName . '.exe'; // exe in bin folder
+            }
+
+            $targetName = $targetName . '.exe';
         }
 
         if ($os !== 'unknown') {
