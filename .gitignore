@@ -1,0 +1,7 @@
+# Netbeans
+/nbproject
+
+# Eclipse
+/.settings
+/.buildpath
+/.project
