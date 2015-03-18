@@ -35,8 +35,10 @@ class Installer
 
         $url = self::getURL($version);
 
-        // the installation folder depends on the vendor-dir (default is './vendor/jakoch/phantomjs')
-        $vendorDir = $composer->getConfig()->get('vendor-dir');
+        $binDir = $composer->getConfig()->get('bin-dir');
+
+        // the installation folder depends on the vendor-dir (default prefix is './vendor')
+        $targetDir = $composer->getConfig()->get('vendor-dir') . self::PHANTOMJS_TARGETDIR;
 
         // Create Composer In-Memory Package
 
@@ -44,25 +46,19 @@ class Installer
         $normVersion = $versionParser->normalize($version);
 
         $package = new Package(self::PHANTOMJS_NAME, $normVersion, $version);
-        $package->setTargetDir($vendorDir . self::PHANTOMJS_TARGETDIR);
+        $package->setTargetDir($targetDir);
         $package->setInstallationSource('dist');
         $package->setDistType(pathinfo($url, PATHINFO_EXTENSION) === 'zip' ? 'zip' : 'tar'); // set zip, tarball
         $package->setDistUrl($url);
 
         // Download the Archive
 
-        //$io = $event->getIO();
-        //$io->write('<info>Fetching PhantomJS v'.$version.'</info>');
-
         $downloadManager = $composer->getDownloadManager();
-        $downloadManager->download($package, self::PHANTOMJS_TARGETDIR, false);
+        $downloadManager->download($package, $targetDir, false);
 
-        // Copy all PhantomJS files to "bin" folder
-        // self::recursiveCopy(self::PHANTOMJS_TARGETDIR, './bin');
+        // Copy only the PhantomJS binary from the installation "target dir" to the "bin" folder
 
-        // Copy only the PhantomJS binary to the "bin" folder
-
-        self::copyPhantomJsBinaryToBinFolder($composer);
+        self::copyPhantomJsBinaryToBinFolder($targetDir, $binDir);
     }
 
     /**
@@ -135,17 +131,16 @@ class Installer
      * Copies the PhantomJs binary to the bin folder.
      * Takes different "folder structure" of the archives and different "binary file names" into account.
      */
-    public static function copyPhantomJsBinaryToBinFolder(Composer $composer)
+    public static function copyPhantomJsBinaryToBinFolder($targetDir, $binDir)
     {
-        $composerBinDir = $composer->getConfig()->get('bin-dir');
-        if (!is_dir($composerBinDir)) {
-            mkdir($composerBinDir);
+        if (!is_dir($binDir)) {
+            mkdir($binDir);
         }
 
         $os = self::getOS();
 
         $sourceName = '/bin/phantomjs';
-        $targetName = $composerBinDir . '/phantomjs';
+        $targetName = $binDir . '/phantomjs';
 
         if ($os === 'windows') {
             // the suffix for binaries on windows is ".exe"
@@ -157,13 +152,13 @@ class Installer
              * For versions up to v1.9.8, the executables resides at the root.
              * From v2.0.0 on, the executable resides in the bin folder.
              */
-            if(is_file(self::PHANTOMJS_TARGETDIR . '/phantomjs.exe')) {
+            if(is_file($targetDir . '/phantomjs.exe')) {
                 $sourceName = str_replace('/bin', '', $sourceName);
             }
         }
 
         if ($os !== 'unknown') {
-            copy(self::PHANTOMJS_TARGETDIR . $sourceName, $targetName);
+            copy($targetDir . $sourceName, $targetName);
             chmod($targetName, 0755);
         }
     }
