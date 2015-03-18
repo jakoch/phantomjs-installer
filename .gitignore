@@ -5,3 +5,13 @@
 /.settings
 /.buildpath
 /.project
+
+# Composer
+/composer.phar
+/vendor
+
+# Vagrant
+.vagrant
+Vagrantfile
+
+.idea
