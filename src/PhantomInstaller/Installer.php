@@ -22,7 +22,7 @@ class Installer
 {
     const PHANTOMJS_NAME = 'PhantomJS';
 
-    const PHANTOMJS_TARGETDIR = './vendor/jakoch/phantomjs';
+    const PHANTOMJS_TARGETDIR = '/jakoch/phantomjs';
 
     /**
      * Operating system dependend installation of PhantomJS
@@ -35,13 +35,16 @@ class Installer
 
         $url = self::getURL($version);
 
+        // the installation folder depends on the vendor-dir (default is './vendor/jakoch/phantomjs')
+        $vendorDir = $composer->getConfig()->get('vendor-dir');
+
         // Create Composer In-Memory Package
 
         $versionParser = new VersionParser();
         $normVersion = $versionParser->normalize($version);
 
         $package = new Package(self::PHANTOMJS_NAME, $normVersion, $version);
-        $package->setTargetDir(self::PHANTOMJS_TARGETDIR);
+        $package->setTargetDir($vendorDir . self::PHANTOMJS_TARGETDIR);
         $package->setInstallationSource('dist');
         $package->setDistType(pathinfo($url, PATHINFO_EXTENSION) === 'zip' ? 'zip' : 'tar'); // set zip, tarball
         $package->setDistUrl($url);
