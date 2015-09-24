@@ -15,7 +15,7 @@ script:
   - phpunit --configuration ./tests/phpunit.xml.dist
   # tests
   - cd ./tests/example-usage && composer install -vvv --profile
-  - ./tests/example-usage/bin/phantomjs -v
+  - ls -ashF bin && bin/phantomjs -v
 
 notifications:
   email: false
