@@ -3,7 +3,7 @@
 /*
  * This file is part of the "jakoch/phantomjs-installer" package.
  *
- * Copyright (c) 2013-2014 Jens-André Koch <jakoch@web.de>
+ * Copyright (c) 2013-2015 Jens-André Koch <jakoch@web.de>
  *
  * The content is released under the MIT License. Please view
  * the LICENSE file that was distributed with this source code.
