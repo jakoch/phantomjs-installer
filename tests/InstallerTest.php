@@ -28,35 +28,50 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
     public function tearDown()
     {
     }
-    
+
     public function testInstallPhantomJS()
     {
         // composer testing: mocks.. for nothing
         //InstallPhantomJS(Event $event)
         $this->assertTrue(true); // contribute ?
     }
-    
+
     public function testCopyPhantomJsBinaryToBinFolder()
     {
         $this->assertTrue(true); // contribute ?
     }
-    
+
+    public function testDropClassWithPathToInstalledBinary()
+    {
+        $targetDir  = __DIR__;
+        $binaryPath = __DIR__ . '/a_fake_phantomjs_binary';
+
+        // generate file
+        $this->assertTrue(\PhantomInstaller\Installer::dropClassWithPathToInstalledBinary($targetDir, $binaryPath));
+        $this->assertTrue(is_file(__DIR__ . '/PhantomBinary.php'));
+
+        // test the generated file
+        require_once __DIR__ . '/PhantomBinary.php';
+        $this->assertSame($binaryPath,          \PhantomInstaller\PhantomInstaller::BIN);
+        $this->assertSame(dirname($binaryPath), \PhantomInstaller\PhantomInstaller::DIR);
+    }
+
     public function testgetURL()
     {
         $version = '1.0.0';
         $os = \PhantomInstaller\Installer::getURL($version);
         $this->assertTrue(is_string($os));
     }
-    
+
     public function testGetOS()
     {
         $os = \PhantomInstaller\Installer::getOS();
-        $this->assertTrue(is_string($os)); 
+        $this->assertTrue(is_string($os));
     }
-    
+
     public function testGetBitSize()
     {
         $bitsize = \PhantomInstaller\Installer::getBitSize();
-        $this->assertTrue(is_integer($bitsize));             
+        $this->assertTrue(is_integer($bitsize));
     }
 }
