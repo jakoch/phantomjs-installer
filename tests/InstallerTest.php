@@ -47,10 +47,10 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
         // generate file
         $this->assertTrue(\PhantomInstaller\Installer::dropClassWithPathToInstalledBinary($binaryPath));
-        $this->assertTrue(is_file(__DIR__ . '/PhantomBinary.php'));
+        $this->assertTrue(is_file(dirname(__DIR__).'/src/PhantomInstaller/PhantomBinary.php'));
 
         // test the generated file
-        require_once __DIR__ . '/PhantomBinary.php';
+        require_once dirname(__DIR__).'/src/PhantomInstaller/PhantomBinary.php';
         $this->assertSame($binaryPath,          \PhantomInstaller\PhantomBinary::BIN);
         $this->assertSame(dirname($binaryPath), \PhantomInstaller\PhantomBinary::DIR);
     }
