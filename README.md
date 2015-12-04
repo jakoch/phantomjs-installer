@@ -63,3 +63,29 @@ All PhantomJS files reside there, especially the `examples`.
 
 3. **Installation into `/bin` folder**
 The binary is then copied from `./vendor/jakoch/phantomjs` to your composer configured `bin-dir` folder.
+
+## PhantomBinary
+
+To access the binary and its folder easily, the class `PhantomBinary` is created automatically during installation.
+
+The class defines the constants `BIN` and `DIR`:
+  - `BIN` is the full-path to the PhantomJS binary file, e.g. `/your_project/bin/phantomjs`
+  - `DIR` is the folder of the binary, e.g. `/your_project/bin`
+
+Both constants are also accessible via their getter-methods `getBin()` and `getDir()`.
+
+Usage:
+
+    use PhantomInstaller\PhantomBinary;
+
+    // get values with class constants
+
+    $bin = PhantomInstaller\PhantomBinary::BIN;
+    $dir = PhantomInstaller\PhantomBinary::DIR;
+
+    // get values with static functions
+
+    $bin = PhantomInstaller\PhantomBinary::getBin();
+    $dir = PhantomInstaller\PhantomBinary::getDir();
+
+This feature is similar to `location.js` of the [phantomjs module](https://github.com/Medium/phantomjs/blob/master/install.js#L93) for Node.
