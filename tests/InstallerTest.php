@@ -52,8 +52,8 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
         // test the generated file
         require_once __DIR__ . '/PhantomBinary.php';
-        $this->assertSame($binaryPath,          \PhantomInstaller\PhantomInstaller::BIN);
-        $this->assertSame(dirname($binaryPath), \PhantomInstaller\PhantomInstaller::DIR);
+        $this->assertSame($binaryPath,          \PhantomInstaller\PhantomBinary::BIN);
+        $this->assertSame(dirname($binaryPath), \PhantomInstaller\PhantomBinary::DIR);
     }
 
     public function testgetURL()
