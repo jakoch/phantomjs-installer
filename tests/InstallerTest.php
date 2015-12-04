@@ -43,11 +43,10 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
 
     public function testDropClassWithPathToInstalledBinary()
     {
-        $targetDir  = __DIR__;
         $binaryPath = __DIR__ . '/a_fake_phantomjs_binary';
 
         // generate file
-        $this->assertTrue(\PhantomInstaller\Installer::dropClassWithPathToInstalledBinary($targetDir, $binaryPath));
+        $this->assertTrue(\PhantomInstaller\Installer::dropClassWithPathToInstalledBinary($binaryPath));
         $this->assertTrue(is_file(__DIR__ . '/PhantomBinary.php'));
 
         // test the generated file

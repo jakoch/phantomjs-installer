@@ -167,7 +167,7 @@ class Installer
             chmod($targetName, 0755);
         }
 
-        self::dropClassWithPathToInstalledBinary($targetDir, $targetName);
+        self::dropClassWithPathToInstalledBinary($targetName);
     }
 
     /**
@@ -188,7 +188,7 @@ class Installer
      *
      * @return bool True, if file dropped. False, otherwise.
      */
-    public static function dropClassWithPathToInstalledBinary($targetDir, $binaryPath)
+    public static function dropClassWithPathToInstalledBinary($binaryPath)
     {
         $code  = "<?php\n";
         $code .= "\n";
@@ -216,7 +216,7 @@ class Installer
             $code
         );
 
-        return (bool) file_put_contents($targetDir . '/PhantomBinary.php', $fileContent);
+        return (bool) file_put_contents(__DIR__ . '/PhantomBinary.php', $fileContent);
     }
 
     /**
