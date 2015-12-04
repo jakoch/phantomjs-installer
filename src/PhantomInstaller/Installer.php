@@ -35,10 +35,12 @@ class Installer
 
         $url = self::getURL($version);
 
-        $binDir = $composer->getConfig()->get('bin-dir');
+        $config = $composer->getConfig();
+
+        $binDir = $config->get('bin-dir');
 
         // the installation folder depends on the vendor-dir (default prefix is './vendor')
-        $targetDir = $composer->getConfig()->get('vendor-dir') . self::PHANTOMJS_TARGETDIR;
+        $targetDir = $config->get('vendor-dir') . self::PHANTOMJS_TARGETDIR;
 
         // Create Composer In-Memory Package
 
@@ -155,12 +157,66 @@ class Installer
             if(is_file($targetDir . '/phantomjs.exe')) {
                 $sourceName = str_replace('/bin', '', $sourceName);
             }
+
+            // slash fix (not needed, but looks better on the dropped php file)
+            $targetName = str_replace('/', '\\', $targetName);
         }
 
         if ($os !== 'unknown') {
             copy($targetDir . $sourceName, $targetName);
             chmod($targetName, 0755);
         }
+
+        self::dropClassWithPathToInstalledBinary($targetDir, $targetName);
+    }
+
+    /**
+     * Drop php class with path to installed phantomjs binary for easier usage.
+     *
+     * Usage:
+     *
+     * use PhantomInstaller\PhantomBinary;
+     *
+     * $bin = PhantomInstaller\PhantomBinary::BIN;
+     * $dir = PhantomInstaller\PhantomBinary::DIR;
+     *
+     * $bin = PhantomInstaller\PhantomBinary::getBin();
+     * $dir = PhantomInstaller\PhantomBinary::getDir();
+     *
+     * @param  string $targetDir  path to /vendor/jakoch/phantomjs
+     * @param  string $BinaryPath full path to binary
+     *
+     * @return bool True, if file dropped. False, otherwise.
+     */
+    public static function dropClassWithPathToInstalledBinary($targetDir, $binaryPath)
+    {
+        $code  = "<?php\n";
+        $code .= "\n";
+        $code .= "namespace PhantomInstaller;\n";
+        $code .= "\n";
+        $code .= "class PhantomBinary\n";
+        $code .= "{\n";
+        $code .= "    const BIN = '%binary%';\n";
+        $code .= "    const DIR = '%binary_dir%';\n";
+        $code .= "\n";
+        $code .= "    public static function getBin() {\n";
+        $code .= "        return self::BIN;\n";
+        $code .= "    }\n";
+        $code .= "\n";
+        $code .= "    public static function getDir() {\n";
+        $code .= "        return self::DIR;\n";
+        $code .= "    }\n";
+        $code .= "}\n";
+
+        // binary      = full path to the binary
+        // binary_dir  = the folder the binary resides in
+        $fileContent = str_replace(
+            array('%binary%', '%binary_dir%'),
+            array($binaryPath, dirname($binaryPath)),
+            $code
+        );
+
+        return (bool) file_put_contents($targetDir . '/PhantomBinary.php', $fileContent);
     }
 
     /**
