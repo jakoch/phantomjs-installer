@@ -162,6 +162,14 @@ class Installer
             $targetName = str_replace('/', '\\', $targetName);
         }
 
+        /**
+         * The folder structure from
+         * https://github.com/eugene1g/phantomjs is different.
+         */
+        if ($os === 'macosx') {
+            $sourceName = str_replace('/bin', '', $sourceName);
+        }
+
         if ($os !== 'unknown') {
             copy($targetDir . $sourceName, $targetName);
             chmod($targetName, 0755);
@@ -250,7 +258,7 @@ class Installer
         }
 
         if ($os === 'macosx') {
-            $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' . $version . '-macosx.zip';
+            $url = 'https://github.com/eugene1g/phantomjs/releases/download/' . $version . '-bin/phantomjs-' . $version . '-macosx.zip';
         }
 
         # OS unknown
