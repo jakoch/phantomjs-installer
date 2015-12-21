@@ -64,6 +64,10 @@ All PhantomJS files reside there, especially the `examples`.
 3. **Installation into `/bin` folder**
 The binary is then copied from `./vendor/jakoch/phantomjs` to your composer configured `bin-dir` folder.
 
+4. **Generation of PhantomBinary**
+
+The installer generates a PHP file `PhantomInstaller\\PhantomBinary` and inserts the path to the binary.
+
 ## PhantomBinary
 
 To access the binary and its folder easily, the class `PhantomBinary` is created automatically during installation.
