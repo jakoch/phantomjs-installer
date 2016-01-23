@@ -24,6 +24,8 @@ class Installer
 
     const PHANTOMJS_TARGETDIR = '/jakoch/phantomjs';
 
+    const PHANTOMJS_CHMODE = 0770; // octal !
+
     /**
      * Operating system dependend installation of PhantomJS
      */
@@ -212,7 +214,7 @@ class Installer
 
         if ($os !== 'unknown') {
             copy($targetDir . $sourceName, $targetName);
-            chmod($targetName, 0755);
+            chmod($targetName, self::PHANTOMJS_CHMODE);
         }
 
         self::dropClassWithPathToInstalledBinary($targetName);
