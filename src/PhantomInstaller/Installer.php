@@ -24,6 +24,8 @@ class Installer
 
     const PHANTOMJS_TARGETDIR = '/jakoch/phantomjs';
 
+    const PHANTOMJS_VERSIONS = array('2.0.0', '1.9.8', '1.9.7');
+
     /**
      * Operating system dependend installation of PhantomJS
      */
@@ -33,8 +35,6 @@ class Installer
 
         $version = self::getVersion($composer);
 
-        $url = self::getURL($version);
-
         $config = $composer->getConfig();
 
         $binDir = $config->get('bin-dir');
@@ -42,7 +42,44 @@ class Installer
         // the installation folder depends on the vendor-dir (default prefix is './vendor')
         $targetDir = $config->get('vendor-dir') . self::PHANTOMJS_TARGETDIR;
 
-        // Create Composer In-Memory Package
+        $io = $event->getIO();
+
+        /* @var \Composer\Downloader\DownloadManager $downloadManager */
+        $downloadManager = $composer->getDownloadManager();
+
+        // Download the Archive
+
+        if(self::download($io, $downloadManager, $targetDir, $version) === true)
+        {
+            // Copy only the PhantomJS binary from the installation "target dir" to the "bin" folder
+
+            self::copyPhantomJsBinaryToBinFolder($targetDir, $binDir);
+        }
+    }
+
+    public static function download($io, $downloadManager, $targetDir, $version)
+    {
+        $retries = count(self::PHANTOMJS_VERSIONS);
+
+        while ($retries--)
+        {
+            $package = self::createComposerInMemoryPackage($targetDir, $version);
+
+            try {
+                $downloadManager->download($package, $targetDir, false);
+                break;
+            } catch (\Exception $e) {
+                if ($e instanceof \Composer\Downloader\TransportException && $e->getStatusCode() === 404) {
+                    $version = self::getLowerVersion($version);
+                    $io->write(PHP_EOL . '<warning>Let\'s retry the download with a lower version number: "'. $version .'".</warning>');
+                }
+            }
+        }
+    }
+
+    public static function createComposerInMemoryPackage($targetDir, $version)
+    {
+        $url = self::getURL($version);
 
         $versionParser = new VersionParser();
         $normVersion = $versionParser->normalize($version);
@@ -53,14 +90,22 @@ class Installer
         $package->setDistType(pathinfo($url, PATHINFO_EXTENSION) === 'zip' ? 'zip' : 'tar'); // set zip, tarball
         $package->setDistUrl($url);
 
-        // Download the Archive
+        return $package;
+    }
 
-        $downloadManager = $composer->getDownloadManager();
-        $downloadManager->download($package, $targetDir, false);
+    public static function getLowerVersion($old_version)
+    {
+        if($old_version === 'dev-master') {
+            $old_version = '2.0.0';
+        }
 
-        // Copy only the PhantomJS binary from the installation "target dir" to the "bin" folder
-
-        self::copyPhantomJsBinaryToBinFolder($targetDir, $binDir);
+        foreach(self::PHANTOMJS_VERSIONS as $idx => $version)
+        {
+            // if $old_version is bigger than $version from versions array, return $version
+            if(version_compare($old_version, $version) == 1) {
+                return $version;
+            }
+        }
     }
 
     /**
