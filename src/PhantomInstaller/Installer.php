@@ -57,7 +57,7 @@ class Installer
 
     public static function download($io, $downloadManager, $targetDir, $version)
     {
-        $retries = count(self::PHANTOMJS_VERSIONS);
+        $retries = count(self::getPhantomJsVersions());
 
         while ($retries--)
         {
@@ -91,15 +91,18 @@ class Installer
         return $package;
     }
 
+    public static function getPhantomJsVersions()
+    {
+        return array('2.0.0', '1.9.8', '1.9.7');
+    }
+
     public static function getLowerVersion($old_version)
     {
         if($old_version === 'dev-master') {
             $old_version = '2.0.0';
         }
 
-        static $phantomjs_versions = array('2.0.0', '1.9.8', '1.9.7');
-
-        foreach($phantomjs_versions as $idx => $version)
+        foreach(self::getPhantomJsVersions() as $idx => $version)
         {
             // if $old_version is bigger than $version from versions array, return $version
             if(version_compare($old_version, $version) == 1) {
