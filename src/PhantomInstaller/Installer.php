@@ -24,8 +24,6 @@ class Installer
 
     const PHANTOMJS_TARGETDIR = '/jakoch/phantomjs';
 
-    const PHANTOMJS_VERSIONS = array('2.0.0', '1.9.8', '1.9.7');
-
     /**
      * Operating system dependend installation of PhantomJS
      */
@@ -99,7 +97,9 @@ class Installer
             $old_version = '2.0.0';
         }
 
-        foreach(self::PHANTOMJS_VERSIONS as $idx => $version)
+        static $phantomjs_versions = array('2.0.0', '1.9.8', '1.9.7');
+
+        foreach($phantomjs_versions as $idx => $version)
         {
             // if $old_version is bigger than $version from versions array, return $version
             if(version_compare($old_version, $version) == 1) {
