@@ -100,10 +100,6 @@ class Installer
 
     public static function getLowerVersion($old_version)
     {
-        if($old_version === 'dev-master') {
-            $old_version = '2.0.0';
-        }
-
         foreach(self::getPhantomJsVersions() as $idx => $version)
         {
             // if $old_version is bigger than $version from versions array, return $version
