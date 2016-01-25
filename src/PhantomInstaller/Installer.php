@@ -67,7 +67,7 @@ class Installer
 
             try {
                 $downloadManager->download($package, $targetDir, false);
-                break;
+                return true;
             } catch (\Exception $e) {
                 if ($e instanceof \Composer\Downloader\TransportException && $e->getStatusCode() === 404) {
                     $version = self::getLowerVersion($version);
