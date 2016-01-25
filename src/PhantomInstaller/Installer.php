@@ -102,7 +102,7 @@ class Installer
     {
         $versions = self::getPhantomJsVersions();
 
-        return $version[0];
+        return $versions[0];
     }
 
     public static function getLowerVersion($old_version)
