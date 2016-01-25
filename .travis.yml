@@ -21,7 +21,13 @@ before_install:
 script:
   - phpunit --configuration ./tests/phpunit.xml.dist
   # tests
-  - cd ./tests/example-usage && composer install -vvv --profile
+  # fetch "v1.9.8"
+  - cd "$TRAVIS_BUILD_DIR/tests/example-v1.9.8" && composer install -vvv --profile
+  - ls -ashF bin
+  - bin/phantomjs -v
+  - cd $TRAVIS_BUILD_DIR
+  # fetch "latest version"
+  - cd "$TRAVIS_BUILD_DIR/tests/example-latest-version" && composer install -vvv --profile
   - ls -ashF bin
   - bin/phantomjs -v
 
