@@ -95,7 +95,14 @@ class Installer
 
     public static function getPhantomJsVersions()
     {
-        return array('2.0.0', '1.9.8', '1.9.7');
+        return array('2.1.1', '2.0.0', '1.9.8', '1.9.7');
+    }
+
+    public static function getLatestPhantomJsVersion()
+    {
+        $versions = self::getPhantomJsVersions();
+
+        return $version[0];
     }
 
     public static function getLowerVersion($old_version)
@@ -134,9 +141,9 @@ class Installer
             $version = self::getRequiredVersion($composer->getPackage(), 'jakoch/phantomjs-installer');
         }
 
-        // fallback to a hardcoded version number, if "dev-master" was set
+        // fallback to the hardcoded latest version, if "dev-master" was set
         if ($version === 'dev-master') {
-            return '2.0.0';
+            return self::getLatestPhantomJsVersion();
         }
 
         // grab version from commit-reference, e.g. "dev-master#<commit-ref> as version"
