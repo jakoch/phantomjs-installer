@@ -94,7 +94,7 @@ Usage:
 
 This feature is similar to `location.js` of the [phantomjs module](https://github.com/Medium/phantomjs/blob/master/install.js#L93) for Node.
 
-## Automatic version lowering on 404
+## Automatic download retrying with version lowering on 404
 
 In case downloading an archive fails with HttpStatusCode 404 (resource not found),
 the downloader will automatically lower the version to the next available version
