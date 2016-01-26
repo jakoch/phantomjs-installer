@@ -3,7 +3,7 @@
 /*
  * This file is part of the "jakoch/phantomjs-installer" package.
  *
- * Copyright (c) 2013-2015 Jens-André Koch <jakoch@web.de>
+ * Copyright (c) 2013-2016 Jens-André Koch <jakoch@web.de>
  *
  * The content is released under the MIT License. Please view
  * the LICENSE file that was distributed with this source code.
@@ -28,13 +28,13 @@ class Installer
 
     /**
      * installPhantomJS is the main function of the install script.
-     * 
+     *
      * It installs PhantomJs into the defined /bin folder,
      * taking operating system dependend archives into account.
      *
      * You need to invoke it from the scripts section of your
      * "composer.json" file as "post-install-cmd" or "post-update-cmd".
-     * 
+     *
      * @param Composer\Event $event
      */
     public static function installPhantomJS(Event $event)
@@ -67,12 +67,12 @@ class Installer
 
     /**
      * The main download function.
-     * 
+     *
      * The package to download is created on the fly.
      * For downloading Composer\DownloadManager is used.
-     * Downloads are automatically retried with a lower version number, 
+     * Downloads are automatically retried with a lower version number,
      * when the resource it not found (404).
-     * 
+     *
      * @param Composer\IO $io
      * @param Composer\DownloadManager $downloadManager
      * @param string $targetDir
@@ -101,7 +101,7 @@ class Installer
 
     /**
      * Returns a Composer Package, which was created in memory.
-     * 
+     *
      * @param string $targetDir
      * @param string $version
      * @return Composer\Package
@@ -124,7 +124,7 @@ class Installer
 
     /**
      * Returns an array with PhantomJs version numbers.
-     * 
+     *
      * @return array PhantomJs version numbers
      */
     public static function getPhantomJsVersions()
@@ -134,7 +134,7 @@ class Installer
 
     /**
      * Returns the latest PhantomJsVersion.
-     * 
+     *
      * @return string Latest PhantomJs Version.
      */
     public static function getLatestPhantomJsVersion()
@@ -146,7 +146,7 @@ class Installer
 
     /**
      * Returns a lower version for a version number.
-     * 
+     *
      * @param string $old_version Version number
      * @return string Lower version number.
      */
@@ -225,7 +225,7 @@ class Installer
     /**
      * Copies the PhantomJs binary to the bin folder.
      * Takes different "folder structure" of the archives and different "binary file names" into account.
-     * 
+     *
      * @param  string $targetDir  path to /vendor/jakoch/phantomjs
      * @param  string $binDir     path to binary folder
      *
