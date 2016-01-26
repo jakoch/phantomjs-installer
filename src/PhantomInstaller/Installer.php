@@ -26,6 +26,8 @@ class Installer
 
     const PHANTOMJS_CHMODE = 0770; // octal !
 
+    const PACKAGE_NAME = 'jakoch/phantomjs-installer';
+
     /**
      * installPhantomJS is the main function of the install script.
      *
@@ -93,7 +95,7 @@ class Installer
             } catch (\Exception $e) {
                 if ($e instanceof \Composer\Downloader\TransportException && $e->getStatusCode() === 404) {
                     $version = self::getLowerVersion($version);
-                    $io->write(PHP_EOL . '<warning>Let\'s retry the download with a lower version number: "'. $version .'".</warning>');
+                    $io->write('<warning>Retrying the download with a lower version number: "'. $version .'".</warning>');
                 }
             }
         }
@@ -173,17 +175,28 @@ class Installer
      */
     public static function getVersion($composer)
     {
+        // try getting the version from the local repository
         $packages = $composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
-
         foreach($packages as $package) {
-            if($package->getName() === 'jakoch/phantomjs-installer') {
+            if($package->getName() === self::PACKAGE_NAME) {
                 $version = $package->getPrettyVersion();
+                break;
             }
         }
 
-        // version was not found in the local repository, let's take a look at the root package
-        if($version == null) {
-            $version = self::getRequiredVersion($composer->getPackage(), 'jakoch/phantomjs-installer');
+        // let's take a look at the aliases
+        if($package->getVersion() === '9999999-dev') { // this indicates the version alias???
+            $aliases = $composer->getLocker()->getAliases();
+            foreach($aliases as $idx => $alias) {
+                if($alias['package'] === self::PACKAGE_NAME) {
+                    return $alias['alias'];
+                }
+            }
+        }
+
+        // let's take a look at the root package
+        if(!empty($version)) {
+            $version = self::getRequiredVersion($composer->getPackage());
         }
 
         // fallback to the hardcoded latest version, if "dev-master" was set
@@ -212,14 +225,14 @@ class Installer
      * @throws \RuntimeException
      * @return mixed
      */
-    public static function getRequiredVersion(RootPackageInterface $package, $packageName = 'jakoch/phantomjs-installer')
+    public static function getRequiredVersion(RootPackageInterface $package)
     {
         foreach (array($package->getRequires(), $package->getDevRequires()) as $requiredPackages) {
-            if (isset($requiredPackages[$packageName])) {
-                return $requiredPackages[$packageName]->getPrettyConstraint();
+            if (isset($requiredPackages[self::PACKAGE_NAME])) {
+                return $requiredPackages[self::PACKAGE_NAME]->getPrettyConstraint();
             }
         }
-        throw new \RuntimeException('Can not determine required version of ' . $packageName);
+        throw new \RuntimeException('Can not determine required version of ' . self::PACKAGE_NAME);
     }
 
     /**
