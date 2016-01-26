@@ -151,11 +151,6 @@ class Installer
             return $matches[1];
         }
 
-        // grab version from a git version tag with a patch level, like "1.9.8-2"
-        if(preg_match('/(\d.\d.\d)(?:(?:-\d)?)/i', $version, $matches)) {
-            return $matches[1];
-        }
-
         // grab version from a Composer patch version tag with a patch level, like "1.9.8-p02"
         if(preg_match('/(\d.\d.\d)(?:(?:-p\d{2})?)/i', $version, $matches)) {
             return $matches[1];
