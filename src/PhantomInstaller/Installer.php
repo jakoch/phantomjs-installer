@@ -27,7 +27,15 @@ class Installer
     const PHANTOMJS_CHMODE = 0770; // octal !
 
     /**
-     * Operating system dependend installation of PhantomJS
+     * installPhantomJS is the main function of the install script.
+     * 
+     * It installs PhantomJs into the defined /bin folder,
+     * taking operating system dependend archives into account.
+     *
+     * You need to invoke it from the scripts section of your
+     * "composer.json" file as "post-install-cmd" or "post-update-cmd".
+     * 
+     * @param Composer\Event $event
      */
     public static function installPhantomJS(Event $event)
     {
@@ -57,6 +65,20 @@ class Installer
         }
     }
 
+    /**
+     * The main download function.
+     * 
+     * The package to download is created on the fly.
+     * For downloading Composer\DownloadManager is used.
+     * Downloads are automatically retried with a lower version number, 
+     * when the resource it not found (404).
+     * 
+     * @param Composer\IO $io
+     * @param Composer\DownloadManager $downloadManager
+     * @param string $targetDir
+     * @param string $version
+     * @return boolean
+     */
     public static function download($io, $downloadManager, $targetDir, $version)
     {
         $retries = count(self::getPhantomJsVersions());
@@ -77,6 +99,13 @@ class Installer
         }
     }
 
+    /**
+     * Returns a Composer Package, which was created in memory.
+     * 
+     * @param string $targetDir
+     * @param string $version
+     * @return Composer\Package
+     */
     public static function createComposerInMemoryPackage($targetDir, $version)
     {
         $url = self::getURL($version);
@@ -93,11 +122,21 @@ class Installer
         return $package;
     }
 
+    /**
+     * Returns an array with PhantomJs version numbers.
+     * 
+     * @return array PhantomJs version numbers
+     */
     public static function getPhantomJsVersions()
     {
         return array('2.1.1', '2.0.0', '1.9.8', '1.9.7');
     }
 
+    /**
+     * Returns the latest PhantomJsVersion.
+     * 
+     * @return string Latest PhantomJs Version.
+     */
     public static function getLatestPhantomJsVersion()
     {
         $versions = self::getPhantomJsVersions();
@@ -105,6 +144,12 @@ class Installer
         return $versions[0];
     }
 
+    /**
+     * Returns a lower version for a version number.
+     * 
+     * @param string $old_version Version number
+     * @return string Lower version number.
+     */
     public static function getLowerVersion($old_version)
     {
         foreach(self::getPhantomJsVersions() as $idx => $version)
@@ -180,6 +225,11 @@ class Installer
     /**
      * Copies the PhantomJs binary to the bin folder.
      * Takes different "folder structure" of the archives and different "binary file names" into account.
+     * 
+     * @param  string $targetDir  path to /vendor/jakoch/phantomjs
+     * @param  string $binDir     path to binary folder
+     *
+     * @return bool True, if file dropped. False, otherwise.
      */
     public static function copyPhantomJsBinaryToBinFolder($targetDir, $binDir)
     {
