@@ -32,12 +32,18 @@ To install PhantomJS as a local, per-project dependency to your project, simply 
 }
 ```
 
-For a development dependency, change `require` to `require-dev`.
+**How to require specific versions of PhantomJS?**
 
-The version number of the package specifies the PhantomJS version!
-If you specify "dev-master" the latest version will be fetched.
-If you specify a explicit commit reference with a version,
-e.g. "dev-master#commit-ref as [version]", then [version] will be used.
+1. The version number of the package specifies the PhantomJS version. When you specify `2.1.1`. 
+  - Composer fetches the 2.1.1 tag(!) of the installer. The installer fetches the 2.1.1 version of PhantomJS.
+2. If you specify `dev-master`, the latest version will be fetched.
+  - Composer fetches the latest version of the installer. The installer fetches the latest version of PhantomJS.
+3. You might also specify the PhantomJS version by using a version alias,  e.g. `dev-master as <version>`. 
+  - Composer fetches the latest version of the installer. The installer fetches `<version>` of PhantomJS!
+4. If you specify an explicit commit reference  with a version alias, e.g. `dev-master#<commit-ref> as <version>`.
+  - Composer fetches a specific git commit of the installer. The installer fetches `<version>` of PhantomJS!
+
+For a development dependency, change `require` to `require-dev`.
 
 The download source used is: https://bitbucket.org/ariya/phantomjs/downloads/
 
