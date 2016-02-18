@@ -275,7 +275,7 @@ class Installer
 
         if ($os !== 'unknown') {
             copy($targetDir . $sourceName, $targetName);
-            chmod($targetName, self::PHANTOMJS_CHMODE);
+            chmod($targetName, static::PHANTOMJS_CHMODE);
         }
 
         self::dropClassWithPathToInstalledBinary($targetName);
