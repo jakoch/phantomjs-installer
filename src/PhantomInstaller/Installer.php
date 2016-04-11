@@ -92,8 +92,8 @@ class Installer
             try {
                 $downloadManager->download($package, $targetDir, false);
                 return true;
-            } catch (\Exception $e) {
-                if ($e instanceof \Composer\Downloader\TransportException && $e->getStatusCode() === 404) {
+            } catch (\Composer\Downloader\TransportException $e) {
+                if ($e->getStatusCode() === 404) {
                     $version = self::getLowerVersion($version);
                     $io->write('<warning>Retrying the download with a lower version number: "'. $version .'".</warning>');
                 }
