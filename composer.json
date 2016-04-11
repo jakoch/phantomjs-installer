@@ -11,6 +11,7 @@
         }
     ],
     "require": {
+        "ext-bz2": "*",
         "ext-openssl": "*"
     },
     "autoload": {
