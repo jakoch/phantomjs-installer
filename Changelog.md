@@ -4,7 +4,12 @@
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
-## [2.1.1] - 2015-01-25
+## [2.1.1-p01] - 2016-04-12
+
+- Added PHP "ext-bz2" as requirement and catch only exceptions that will be handled
+  - https://github.com/jakoch/phantomjs-installer/pull/28
+
+## [2.1.1] - 2016-01-25
 
 - added v2.1.1 to the PhantomJS versions array to
 - Automatic download retrying with version lowering, if download fails with 404
