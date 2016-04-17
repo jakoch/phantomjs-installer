@@ -6,8 +6,8 @@
 
 ## [2.1.1-p01] - 2016-04-12
 
-- Added PHP "ext-bz2" as requirement and catch only exceptions that will be handled
-  - https://github.com/jakoch/phantomjs-installer/pull/28
+- [PR #28](https://github.com/jakoch/phantomjs-installer/pull/28): added PHP "ext-bz2" as requirement and catch only exceptions that will be handled
+- [PR #27](https://github.com/jakoch/phantomjs-installer/pull/27): use static to access chmod constant
 
 ## [2.1.1] - 2016-01-25
 
@@ -28,7 +28,8 @@
 - Initial Release
 - grab version number from explicit commit references, issue #8
 
-[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1...HEAD
+[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p01...HEAD
+[2.1.1-p01]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1...2.1.1-p01
 [2.1.1]: https://github.com/jakoch/phantomjs-installer/compare/2.0.0...2.1.1
 [2.0.0]: https://github.com/jakoch/phantomjs-installer/compare/1.9.8...2.0.0
 [1.9.8]: https://github.com/jakoch/phantomjs-installer/compare/1.9.7...1.9.8
