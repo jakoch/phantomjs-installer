@@ -4,6 +4,10 @@
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [2.1.1-p02] - 2016-05-12
+
+- [Fix #29](https://github.com/jakoch/phantomjs-installer/issues/29): Invalid version string "^2.1" 
+
 ## [2.1.1-p01] - 2016-04-12
 
 - [PR #28](https://github.com/jakoch/phantomjs-installer/pull/28): added PHP "ext-bz2" as requirement and catch only exceptions that will be handled
@@ -28,7 +32,8 @@
 - Initial Release
 - grab version number from explicit commit references, issue #8
 
-[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p01...HEAD
+[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p02...HEAD
+[2.1.1-p02]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p01...2.1.1-p02
 [2.1.1-p01]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1...2.1.1-p01
 [2.1.1]: https://github.com/jakoch/phantomjs-installer/compare/2.0.0...2.1.1
 [2.0.0]: https://github.com/jakoch/phantomjs-installer/compare/1.9.8...2.0.0
