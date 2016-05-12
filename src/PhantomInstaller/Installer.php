@@ -194,11 +194,6 @@ class Installer
             }
         }
 
-        // let's take a look at the root package
-        if(!empty($version)) {
-            $version = self::getRequiredVersion($composer->getPackage());
-        }
-
         // fallback to the hardcoded latest version, if "dev-master" was set
         if ($version === 'dev-master') {
             return self::getLatestPhantomJsVersion();
@@ -212,6 +207,11 @@ class Installer
         // grab version from a Composer patch version tag with a patch level, like "1.9.8-p02"
         if(preg_match('/(\d.\d.\d)(?:(?:-p\d{2})?)/i', $version, $matches)) {
             return $matches[1];
+        }
+
+        // let's take a look at the root package
+        if(!empty($version)) {
+            $version = self::getRequiredVersion($composer->getPackage());
         }
 
         return $version;
