@@ -351,11 +351,11 @@ class Installer
         if ($os === 'linux') {
             $bitsize = self::getBitSize();
 
-            if ($bitsize === 32) {
+            if ($bitsize === '32') {
                 $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' . $version . '-linux-i686.tar.bz2';
             }
 
-            if ($bitsize === 64) {
+            if ($bitsize === '64') {
                 $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' . $version . '-linux-x86_64.tar.bz2';
             }
         }
@@ -382,15 +382,21 @@ class Installer
      */
     public static function getOS()
     {
+        // override the detection of the operation system 
+        // by checking for an env var and returning early
+        if (isset($_ENV['PHANTOMJS_PLATFORM'])) {
+            return strtolower($_ENV['PHANTOMJS_PLATFORM']);
+        }
+
         $uname = strtolower(php_uname());
 
-        if (strpos($uname, "darwin") !== false || 
-            strpos($uname, "openbsd") !== false || 
-            strpos($uname, "freebsd") !== false) {
+        if (strpos($uname, 'darwin') !== false || 
+            strpos($uname, 'openbsd') !== false || 
+            strpos($uname, 'freebsd') !== false) {
             return 'macosx';
-        } elseif (strpos($uname, "win") !== false) {
+        } elseif (strpos($uname, 'win') !== false) {
             return 'windows';
-        } elseif (strpos($uname, "linux") !== false) {
+        } elseif (strpos($uname, 'linux') !== false) {
             return 'linux';
         } else {
             return 'unknown';
@@ -404,14 +410,20 @@ class Installer
      */
     public static function getBitSize()
     {
+        // override the detection of the bitsize
+        // by checking for an env var and returning early
+        if (isset($_ENV['PHANTOMJS_BITSIZE'])) {
+            return strtolower($_ENV['PHANTOMJS_BITSIZE']);
+        }
+
         if (PHP_INT_SIZE === 4) {
-            return 32;
+            return '32';
         }
 
         if (PHP_INT_SIZE === 8) {
-            return 64;
+            return '64';
         }
 
-        return PHP_INT_SIZE; // 16-bit?
+        return (string) PHP_INT_SIZE; // 16-bit?
     }
 }

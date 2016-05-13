@@ -71,6 +71,6 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
     public function testGetBitSize()
     {
         $bitsize = \PhantomInstaller\Installer::getBitSize();
-        $this->assertTrue(is_integer($bitsize));
+        $this->assertTrue(is_string($bitsize));
     }
 }
