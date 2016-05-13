@@ -384,7 +384,9 @@ class Installer
     {
         $uname = strtolower(php_uname());
 
-        if (strpos($uname, "darwin") !== false) {
+        if (strpos($uname, "darwin") !== false || 
+            strpos($uname, "openbsd") !== false || 
+            strpos($uname, "freebsd") !== false) {
             return 'macosx';
         } elseif (strpos($uname, "win") !== false) {
             return 'windows';
