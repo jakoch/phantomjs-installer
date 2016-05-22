@@ -4,6 +4,13 @@
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [2.1.1-p03] - 2016-05-22
+
+- [Issue #30](https://github.com/jakoch/phantomjs-installer/issues/30): Issue installing PJS on Amazon Linux In Docker locally
+  - added variables $_ENV['PHANTOMJS_PLATFORM'] and $_ENV['PHANTOMJS_BITSIZE'] to override platform requirements.
+    this allows to package on a platform different to the target platform, e.g. package on MacOSX for Linux or on Windows for MacOSX.
+- identify `FreeBSD` and `OpenBSD` as `MacOSX` - they will use MacOSX downloads.
+
 ## [2.1.1-p02] - 2016-05-12
 
 - [Fix #29](https://github.com/jakoch/phantomjs-installer/issues/29): Invalid version string "^2.1" 
@@ -32,7 +39,8 @@
 - Initial Release
 - grab version number from explicit commit references, issue #8
 
-[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p02...HEAD
+[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p03...HEAD
+[2.1.1-p03]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p02...2.1.1-p03
 [2.1.1-p02]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p01...2.1.1-p02
 [2.1.1-p01]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1...2.1.1-p01
 [2.1.1]: https://github.com/jakoch/phantomjs-installer/compare/2.0.0...2.1.1
