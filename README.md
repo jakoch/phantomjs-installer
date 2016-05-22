@@ -101,6 +101,14 @@ Usage:
 
 This feature is similar to `location.js` of the [phantomjs module](https://github.com/Medium/phantomjs/blob/master/install.js#L93) for Node.
 
+## Override platform requirements
+
+The environment variables `PHANTOMJS_PLATFORM` and `PHANTOMJS_BITSIZE` enable you to override the platform requirements at the time of packaging. This decouples the packaging system from the target system. It allows to package on Linux for MacOSX or on Windows for Linux.
+
+Possible values for
+ - `PHANTOMJS_PLATFORM` are: `macosx`, `windows`, `linux`.
+ - `PHANTOMJS_BITSIZE` are: `32`or `64`.
+
 ## Automatic download retrying with version lowering on 404
 
 In case downloading an archive fails with HttpStatusCode 404 (resource not found),
