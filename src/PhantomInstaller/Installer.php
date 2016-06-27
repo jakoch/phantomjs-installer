@@ -54,17 +54,61 @@ class Installer
 
         $io = $event->getIO();
 
+		// do not install a lower or equal version
+        $phantomJsBinary = self::getPhantomJsBinary($binDir);
+        if($phantomJsBinary) {
+			$installedVersion = self::getPhantomJsVersionFromBinary($phantomJsBinary);
+        	if(version_compare($version, $installedVersion) !== 1) {
+        		$io->write('   - PhantomJS v' . $installedVersion . ' is already installed. Skipping the installation.');
+        		return;
+        	}
+        }      
+
         /* @var \Composer\Downloader\DownloadManager $downloadManager */
         $downloadManager = $composer->getDownloadManager();
 
         // Download the Archive
 
-        if(self::download($io, $downloadManager, $targetDir, $version) === true)
+        if(self::download($io, $downloadManager, $targetDir, $version))
         {
             // Copy only the PhantomJS binary from the installation "target dir" to the "bin" folder
 
             self::copyPhantomJsBinaryToBinFolder($targetDir, $binDir);
         }
+    }
+
+    /**
+     * Get PhantomJS application version. Equals running "phantomjs -v" on the CLI.
+     * 
+     * @param string $binary
+     * @return string PhantomJS Version
+     */
+    public static function getPhantomJsVersionFromBinary($binary)
+    {
+		$cmd = escapeshellarg($binary) . ' -v';
+		exec($cmd, $stdout);
+		$version = $stdout[0];
+		return $version;
+    }
+
+    /**
+     * Get path to PhantomJS binary.
+     *
+     * @param string $binDir
+     * @return string|bool Returns false, if file not found, else filepath.
+     */
+    public static function getPhantomJsBinary($binDir)
+    {
+    	$os = self::getOS();
+
+        $binary = $binDir . '/phantomjs';
+
+        if ($os === 'windows') {
+            // the suffix for binaries on windows is ".exe"
+            $binary .= '.exe';         
+        }
+
+        return realpath($binary);
     }
 
     /**

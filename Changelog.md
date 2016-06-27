@@ -4,6 +4,11 @@
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [2.1.1-p04] - 2016-06-27
+
+- [Issue #17](https://github.com/jakoch/phantomjs-installer/issues/17): Do not try to re-install same PhantomJS version
+  - The installation is skipped, when PhantomJS is already installed and the requested version is not higher. 
+
 ## [2.1.1-p03] - 2016-05-22
 
 - [Issue #30](https://github.com/jakoch/phantomjs-installer/issues/30): Issue installing PJS on Amazon Linux In Docker locally
@@ -39,7 +44,8 @@
 - Initial Release
 - grab version number from explicit commit references, issue #8
 
-[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p03...HEAD
+[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p04...HEAD
+[2.1.1-p04]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p03...2.1.1-p04
 [2.1.1-p03]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p02...2.1.1-p03
 [2.1.1-p02]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p01...2.1.1-p02
 [2.1.1-p01]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1...2.1.1-p01
