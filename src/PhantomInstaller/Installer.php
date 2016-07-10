@@ -141,6 +141,10 @@ class Installer
                     $version = self::getLowerVersion($version);
                     $io->write('<warning>Retrying the download with a lower version number: "'. $version .'".</warning>');
                 }
+            } catch (\Exception $e) {
+                $message = $e->getMessage();
+                $io->write(PHP_EOL . '<error>While downloading version '. $version. ' the following error accoured: '. $message .'</error>');
+                return false;
             }
         }
     }
