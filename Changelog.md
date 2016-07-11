@@ -4,6 +4,10 @@
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [2.1.1-p05] - 2016-07-11
+
+- [Issue 32#](https://github.com/jakoch/phantomjs-installer/issues/32): do not download multiple times, when bz2 extension isn't loaded
+
 ## [2.1.1-p04] - 2016-06-27
 
 - [Issue #17](https://github.com/jakoch/phantomjs-installer/issues/17): Do not try to re-install same PhantomJS version
@@ -44,7 +48,8 @@
 - Initial Release
 - grab version number from explicit commit references, issue #8
 
-[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p04...HEAD
+[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p05...HEAD
+[2.1.1-p05]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p04...2.1.1-p05
 [2.1.1-p04]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p03...2.1.1-p04
 [2.1.1-p03]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p02...2.1.1-p03
 [2.1.1-p02]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p01...2.1.1-p02
