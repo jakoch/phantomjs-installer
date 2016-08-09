@@ -118,9 +118,9 @@ location of the PhantomJS binary file. The default download location is Bitbucke
   - `https://bitbucket.org/ariya/phantomjs/downloads/`
 
 Possible values for `PHANTOMJS_CDNURL` are:
-  - `https://cnpmjs.org/downloads/`
-  - `https://npm.taobao.org/mirrors/phantomjs/`
-  - `https://github.com/Medium/phantomjs/`
+  - `https://cnpmjs.org/downloads/` - USA, San Mateo (47.88.189.193)
+  - `https://npm.taobao.org/mirrors/phantomjs/` - China, Hangzhou (114.55.80.225)
+  - `https://github.com/Medium/phantomjs/` - USA, San Francisco (192.30.253.113)
 
 ## Automatic download retrying with version lowering on 404
 
