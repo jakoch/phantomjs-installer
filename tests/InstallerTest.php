@@ -69,6 +69,7 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
         $cdnurl = \PhantomInstaller\Installer::getCdnUrl($version);
         $this->assertSame('https://github.com/medium/phantomjs/releases/download/v'.$version.'/', $cdnurl);
 
+        unset($_ENV['PHANTOMJS_CDNURL']);
         $_SERVER['PHANTOMJS_CDNURL'] = 'scheme://another-download-url';
         $cdnurl = \PhantomInstaller\Installer::getCdnUrl($version);
         $this->assertSame('scheme://another-download-url/', $cdnurl);
