@@ -9,6 +9,7 @@
 - [Issue #34](https://github.com/jakoch/phantomjs-installer/issues/34): Bitbucket downloading issue 
   - added env and server variable `PHANTOMJS_CDNURL` to set a mirror as download location
 - added `$_SERVER` variable handling for all `$_ENV` vars
+  this enables you to use either a server or env var for `PHANTOMJS_PLATFORM`, `PHANTOMJS_BITSIZE` and `PHANTOMJS_CDNURL`
 
 ## [2.1.1-p05] - 2016-07-11
 
@@ -17,14 +18,14 @@
 ## [2.1.1-p04] - 2016-06-27
 
 - [Issue #17](https://github.com/jakoch/phantomjs-installer/issues/17): Do not try to re-install same PhantomJS version
-  - The installation is skipped, when PhantomJS is already installed and the requested version is not higher. 
+  - The installation is skipped, when PhantomJS is already installed and the requested version is not higher
 
 ## [2.1.1-p03] - 2016-05-22
 
 - [Issue #30](https://github.com/jakoch/phantomjs-installer/issues/30): Issue installing PJS on Amazon Linux In Docker locally
-  - added variables $_ENV['PHANTOMJS_PLATFORM'] and $_ENV['PHANTOMJS_BITSIZE'] to override platform requirements.
+  - added variables $_ENV['PHANTOMJS_PLATFORM'] and $_ENV['PHANTOMJS_BITSIZE'] to override platform requirements
     this allows to package on a platform different to the target platform, e.g. package on MacOSX for Linux or on Windows for MacOSX.
-- identify `FreeBSD` and `OpenBSD` as `MacOSX` - they will use MacOSX downloads.
+- identify `FreeBSD` and `OpenBSD` as `MacOSX` - they will use MacOSX downloads
 
 ## [2.1.1-p02] - 2016-05-12
 
