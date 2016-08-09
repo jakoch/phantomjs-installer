@@ -55,6 +55,25 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(dirname($binaryPath), \PhantomInstaller\PhantomBinary::DIR);
     }
 
+    public function testGetCdnUrl()
+    {
+        $version = '1.0.0';
+        $cdnurl = \PhantomInstaller\Installer::getCdnUrl($version);
+        $this->assertSame('https://bitbucket.org/ariya/phantomjs/downloads/', $cdnurl);
+
+        $_ENV['PHANTOMJS_CDNURL'] = 'https://cnpmjs.org/downloads'; // without slash
+        $cdnurl = \PhantomInstaller\Installer::getCdnUrl($version);
+        $this->assertSame('https://cnpmjs.org/downloads/', $cdnurl);
+
+        $_ENV['PHANTOMJS_CDNURL'] = 'https://github.com/medium/phantomjs';
+        $cdnurl = \PhantomInstaller\Installer::getCdnUrl($version);
+        $this->assertSame('https://github.com/medium/phantomjs/releases/download/v'.$version.'/', $cdnurl);
+
+        $_SERVER['PHANTOMJS_CDNURL'] = 'scheme://another-download-url';
+        $cdnurl = \PhantomInstaller\Installer::getCdnUrl($version);
+        $this->assertSame('scheme://another-download-url/', $cdnurl);
+    }
+
     public function testgetURL()
     {
         $version = '1.0.0';

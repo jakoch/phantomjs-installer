@@ -16,7 +16,7 @@ To install PhantomJS as a local, per-project dependency to your project, simply 
 ```json
 {
     "require": {
-        "jakoch/phantomjs-installer": "2.1.1-p05"
+        "jakoch/phantomjs-installer": "2.1.1-p06"
     },
     "config": {
         "bin-dir": "bin"
@@ -103,11 +103,24 @@ This feature is similar to `location.js` of the [phantomjs module](https://githu
 
 ## Override platform requirements
 
-The environment variables `PHANTOMJS_PLATFORM` and `PHANTOMJS_BITSIZE` enable you to override the platform requirements at the time of packaging. This decouples the packaging system from the target system. It allows to package on Linux for MacOSX or on Windows for Linux.
+The environment and server variables `PHANTOMJS_PLATFORM` and `PHANTOMJS_BITSIZE` enable you to
+override the platform requirements at the time of packaging. This decouples the packaging system
+from the target system. It allows to package on Linux for MacOSX or on Windows for Linux.
 
 Possible values for
  - `PHANTOMJS_PLATFORM` are: `macosx`, `windows`, `linux`.
  - `PHANTOMJS_BITSIZE` are: `32`or `64`.
+
+## Downloading from a mirror
+
+The environment and server variables `PHANTOMJS_CDNURL` enables you to override the default download
+location of the PhantomJS binary file. The default download location is Bitbucket: 
+  - `https://bitbucket.org/ariya/phantomjs/downloads/`
+
+Possible values for `PHANTOMJS_CDNURL` are:
+  - `https://cnpmjs.org/downloads/`
+  - `https://npm.taobao.org/mirrors/phantomjs/`
+  - `https://github.com/Medium/phantomjs/`
 
 ## Automatic download retrying with version lowering on 404
 

@@ -386,41 +386,96 @@ class Installer
      */
     public static function getURL($version)
     {
-        $url = false;
-        $os = self::getOS();
-
-        // old versions up to v1.9.2 were hosted on https://phantomjs.googlecode.com/files/
-        // newer versions are hosted on https://bitbucket.org/ariya/phantomjs/downloads/
+        $file = false;
+        $os  = self::getOS();
+        $cdn_url = self::getCdnUrl($version);
 
         if ($os === 'windows') {
-            $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' . $version . '-windows.zip';
+            $file = 'phantomjs-' . $version . '-windows.zip';
         }
 
         if ($os === 'linux') {
             $bitsize = self::getBitSize();
 
             if ($bitsize === '32') {
-                $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' . $version . '-linux-i686.tar.bz2';
+                $file = 'phantomjs-' . $version . '-linux-i686.tar.bz2';
             }
 
             if ($bitsize === '64') {
-                $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' . $version . '-linux-x86_64.tar.bz2';
+                $file = 'phantomjs-' . $version . '-linux-x86_64.tar.bz2';
             }
         }
 
         if ($os === 'macosx') {
-            $url = 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-' . $version . '-macosx.zip';
+            $file = 'phantomjs-' . $version . '-macosx.zip';
         }
 
         # OS unknown
-        if ($url === false) {
+        if ($file === false) {
             throw new \RuntimeException(
                 'The Installer could not select a PhantomJS package for this OS.
                 Please install PhantomJS manually into the /bin folder of your project.'
             );
         }
 
-        return $url;
+        return $cdn_url . $file;
+    }
+
+    /**
+     * Returns the base URL for downloads.
+     * Uses the ENV var "PHANTOMJS_CDNURL" or returns the default location (bitbucket).
+     *
+     * == Official Downloads
+     *
+     * The old versions up to v1.9.2 were hosted on https://phantomjs.googlecode.com/files/
+     * Newer versions are hosted on https://bitbucket.org/ariya/phantomjs/downloads/
+     *
+     * == Mirrors
+     *
+     * NPM USA
+     *  https://cnpmjs.org/downloads
+     *  https://cnpmjs.org/mirrors/phantomjs/phantomjs-2.1.1-windows.zip 
+     *
+     * NPM China
+     *  https://npm.taobao.org/mirrors/phantomjs/
+     *  https://npm.taobao.org/mirrors/phantomjs/phantomjs-2.1.1-windows.zip
+     * 
+     * Github, USA, SF
+     *  https://github.com/Medium/phantomjs/  
+     *  https://github.com/Medium/phantomjs/releases/download/v2.1.1/phantomjs-2.1.1-windows.zip
+     *
+     * @return string URL
+     */
+    public static function getCdnUrl($version)
+    {
+        $url = '';
+
+        // override the detection of the default URL
+        // by checking for an env var and returning early
+        if (isset($_ENV['PHANTOMJS_CDNURL'])) {
+            $url = $_ENV['PHANTOMJS_CDNURL'];
+        }
+        elseif (isset($_SERVER['PHANTOMJS_CDNURL'])) {
+            $url = $_SERVER['PHANTOMJS_CDNURL'];
+        }
+
+        if($url !== '') {
+            $url = strtolower($url);
+
+            // add version to URL when using "github.com/medium/phantomjs"
+            if(strpos('github.com/medium/phantomjs', $url) !== false) {
+                return 'https://github.com/medium/phantomjs/releases/download/v'.$version.'/';
+            }
+
+            // add slash at the end of the URL, if missing
+            if($url[strlen($url)-1] != '/') {                
+                $url .= '/';
+            }
+
+            return $url;
+        }
+
+        return 'https://bitbucket.org/ariya/phantomjs/downloads/';
     }
 
     /**
@@ -434,6 +489,10 @@ class Installer
         // by checking for an env var and returning early
         if (isset($_ENV['PHANTOMJS_PLATFORM'])) {
             return strtolower($_ENV['PHANTOMJS_PLATFORM']);
+        }
+        
+        if (isset($_SERVER['PHANTOMJS_PLATFORM'])) {
+            return strtolower($_SERVER['PHANTOMJS_PLATFORM']);
         }
 
         $uname = strtolower(php_uname());
@@ -462,6 +521,10 @@ class Installer
         // by checking for an env var and returning early
         if (isset($_ENV['PHANTOMJS_BITSIZE'])) {
             return strtolower($_ENV['PHANTOMJS_BITSIZE']);
+        }
+        
+        if (isset($_SERVER['PHANTOMJS_PLATFORM'])) {
+            return strtolower($_SERVER['PHANTOMJS_PLATFORM']);
         }
 
         if (PHP_INT_SIZE === 4) {
