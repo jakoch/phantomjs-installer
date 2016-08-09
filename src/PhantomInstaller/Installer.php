@@ -463,7 +463,7 @@ class Installer
             $url = strtolower($url);
 
             // add version to URL when using "github.com/medium/phantomjs"
-            if(strpos('github.com/medium/phantomjs', $url) !== false) {
+            if(strpos($url, 'github.com/medium/phantomjs') !== false) {
                 return 'https://github.com/medium/phantomjs/releases/download/v'.$version.'/';
             }
 
