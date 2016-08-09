@@ -56,7 +56,7 @@
 - grab version number from explicit commit references, issue #8
 
 [Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p06...HEAD
-[2.1.1-p05]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p05...2.1.1-p06
+[2.1.1-p06]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p05...2.1.1-p06
 [2.1.1-p05]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p04...2.1.1-p05
 [2.1.1-p04]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p03...2.1.1-p04
 [2.1.1-p03]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p02...2.1.1-p03
