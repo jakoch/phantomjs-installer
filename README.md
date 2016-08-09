@@ -113,14 +113,23 @@ Possible values for
 
 ## Downloading from a mirror
 
-The environment and server variables `PHANTOMJS_CDNURL` enables you to override the default download
-location of the PhantomJS binary file. The default download location is Bitbucket: 
-  - `https://bitbucket.org/ariya/phantomjs/downloads/`
+The environment and server variable `PHANTOMJS_CDNURL` enables you to override
+the default download location of the PhantomJS binary file. 
 
-Possible values for `PHANTOMJS_CDNURL` are:
+The default download location is Bitbucket: `https://bitbucket.org/ariya/phantomjs/downloads/`.
+You don't need to set it explicitly. It's used, when `CDNURL` is not set.
+
+You might use one of the following mirror URLs as a value for `PHANTOMJS_CDNURL`:
   - `https://cnpmjs.org/downloads/` - USA, San Mateo (47.88.189.193)
   - `https://npm.taobao.org/mirrors/phantomjs/` - China, Hangzhou (114.55.80.225)
   - `https://github.com/Medium/phantomjs/` - USA, San Francisco (192.30.253.113)
+
+This list of mirrors is not complete. If you know another mirror, please don't hesitate to add it here.
+
+The mirror URLs are also not hardcoded, except for the Github URL. 
+This enables you to point to any PhantomJS mirror or download folder you like.
+For instance, you could point to the URL of the download folder of your company, where the binaries are stored: 
+`PHANTOMJS_CDNURL=https://cdn.company.com/downloads/phantomjs/`.
 
 ## Automatic download retrying with version lowering on 404
 
