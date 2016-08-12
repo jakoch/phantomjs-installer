@@ -523,8 +523,8 @@ class Installer
             return strtolower($_ENV['PHANTOMJS_BITSIZE']);
         }
         
-        if (isset($_SERVER['PHANTOMJS_PLATFORM'])) {
-            return strtolower($_SERVER['PHANTOMJS_PLATFORM']);
+        if (isset($_SERVER['PHANTOMJS_BITSIZE'])) {
+            return strtolower($_SERVER['PHANTOMJS_BITSIZE']);
         }
 
         if (PHP_INT_SIZE === 4) {
