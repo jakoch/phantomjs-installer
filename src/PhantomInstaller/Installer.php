@@ -17,6 +17,7 @@ use Composer\Composer;
 use Composer\Package\Package;
 use Composer\Package\RootPackageInterface;
 use Composer\Package\Version\VersionParser;
+use Psr\Log\LogLevel;
 
 class Installer
 {
@@ -57,7 +58,7 @@ class Installer
         // do not install a lower or equal version
         $phantomJsBinary = self::getPhantomJsBinary($binDir);
         if($phantomJsBinary) {
-            $installedVersion = self::getPhantomJsVersionFromBinary($phantomJsBinary);
+            $installedVersion = self::getPhantomJsVersionFromBinary($phantomJsBinary, $io);
             if(version_compare($version, $installedVersion) !== 1) {
                 $io->write('   - PhantomJS v' . $installedVersion . ' is already installed. Skipping the installation.');
                 return;
@@ -81,14 +82,23 @@ class Installer
      * Get PhantomJS application version. Equals running "phantomjs -v" on the CLI.
      *
      * @param string $binary
+     * @param Composer\IO $io
      * @return string PhantomJS Version
      */
-    public static function getPhantomJsVersionFromBinary($binary)
+    public static function getPhantomJsVersionFromBinary($binary, $io)
     {
-        $cmd = escapeshellarg($binary) . ' -v';
-        exec($cmd, $stdout);
-        $version = $stdout[0];
-        return $version;
+      try {
+          $cmd = escapeshellarg($binary) . ' -v';
+          exec($cmd, $stdout);
+          $version = $stdout[0];
+
+          return $version;
+      }
+      catch (\Exception $e) {
+          $io->log(LogLevel::NOTICE, "<warning>Caught exception while checking PhantomJS version:\n" . $e->getMessage() . '</warning>');
+          $io->log(LogLevel::NOTICE, "Re-downloading PhantomJS");
+          return FALSE;
+      }
     }
 
     /**
