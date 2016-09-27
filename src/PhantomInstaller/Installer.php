@@ -17,7 +17,6 @@ use Composer\Composer;
 use Composer\Package\Package;
 use Composer\Package\RootPackageInterface;
 use Composer\Package\Version\VersionParser;
-use Psr\Log\LogLevel;
 
 class Installer
 {
@@ -87,18 +86,17 @@ class Installer
      */
     public static function getPhantomJsVersionFromBinary($binary, $io)
     {
-      try {
-          $cmd = escapeshellarg($binary) . ' -v';
-          exec($cmd, $stdout);
-          $version = $stdout[0];
-
-          return $version;
-      }
-      catch (\Exception $e) {
-          $io->log(LogLevel::NOTICE, "<warning>Caught exception while checking PhantomJS version:\n" . $e->getMessage() . '</warning>');
-          $io->log(LogLevel::NOTICE, "Re-downloading PhantomJS");
-          return FALSE;
-      }
+        try {
+            $cmd = escapeshellarg($binary) . ' -v';
+            exec($cmd, $stdout);
+            $version = $stdout[0];
+            return $version;
+        }
+        catch (\Exception $e) {
+            $io->notice("<warning>Caught exception while checking PhantomJS version:\n" . $e->getMessage() . '</warning>');
+            $io->notice('Re-downloading PhantomJS');
+            return false;
+        }
     }
 
     /**
