@@ -528,16 +528,14 @@ class Installer
             $url = static::PHANTOMJS_CDNURL_DEFAULT;
         }
 
-        $url = strtolower($url);
-
-        // add version to URL when using "github.com/medium/phantomjs"
-        if (strpos($url, 'github.com/medium/phantomjs') !== false) {
-            return 'https://github.com/medium/phantomjs/releases/download/v' . $version . '/';
-        }
-
         // add slash at the end of the URL, if missing
         if ($url[strlen($url) - 1] != '/') {
             $url .= '/';
+        }
+
+        // add version to URL when using "github.com/medium/phantomjs"
+        if (substr(strtolower($url), -28) == 'github.com/medium/phantomjs/') {
+            $url .= 'releases/download/v' . $version . '/';
         }
 
         return $url;

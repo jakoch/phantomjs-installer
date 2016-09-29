@@ -110,10 +110,18 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
     {
         $this->setUpForGetCdnUrl();
         $version = '1.0.0';
-        $configuredCdnUrl = 'https://github.com/medium/phantomjs';
+
+        // Test rewrite for the Medium url as documented
+        $configuredCdnUrl = 'https://github.com/Medium/phantomjs';
         $_ENV['PHANTOMJS_CDNURL'] = $configuredCdnUrl;
         $cdnurl = $this->object->getCdnUrl($version);
-        $this->assertSame('https://github.com/medium/phantomjs/releases/download/v' . $version . '/', $cdnurl);
+        $this->assertSame($configuredCdnUrl . '/releases/download/v' . $version . '/', $cdnurl);
+
+        // Test that a longer url is not rewritten
+        $configuredCdnUrl = 'https://github.com/Medium/phantomjs/releases/download/v1.9.19/';
+        $_ENV['PHANTOMJS_CDNURL'] = $configuredCdnUrl;
+        $cdnurl = $this->object->getCdnUrl($version);
+        $this->assertSame($configuredCdnUrl, $cdnurl);
     }
 
     /**
