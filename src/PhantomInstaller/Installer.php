@@ -288,12 +288,10 @@ class Installer
         }
 
         // let's take a look at the aliases
-        if ($package->getVersion() === '9999999-dev') { // this indicates the version alias???
-            $aliases = $composer->getLocker()->getAliases();
-            foreach ($aliases as $idx => $alias) {
-                if ($alias['package'] === static::PACKAGE_NAME) {
-                    return $alias['alias'];
-                }
+        $aliases = $composer->getLocker()->getAliases();
+        foreach ($aliases as $idx => $alias) {
+            if ($alias['package'] === static::PACKAGE_NAME) {
+                return $alias['alias'];
             }
         }
 
