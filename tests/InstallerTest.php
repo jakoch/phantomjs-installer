@@ -1,44 +1,66 @@
 <?php
 
-namespace Tests;
+namespace PhantomInstaller\Test;
 
-include dirname(__DIR__) . '/src/PhantomInstaller/Installer.php';
-#use \PhantomInstaller\Installer;
+use PhantomInstaller\Installer;
+use PhantomInstaller\PhantomBinary;
 
+/**
+ * @backupStaticAttributes enabled
+ */
 class InstallerTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var PhantomInstaller\Installer
-     */
+    /** @var Installer */
     protected $object;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    public function setUp()
+    protected $bakEnvVars = array();
+
+    protected $bakServerVars = array();
+    
+    protected function setUp()
     {
-        //$this->object = new Installer;
+        parent::setUp();
+
+        $mockComposer = $this->getMockComposer();
+        $mockIO = $this->getMockIO();
+        $this->object = new Installer($mockComposer, $mockIO);
+
+        // Backup $_ENV and $_SERVER
+        $this->bakEnvVars = $_ENV;
+        $this->bakServerVars = $_SERVER;
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    public function tearDown()
+    protected function tearDown()
     {
+        // Restore $_ENV and $_SERVER
+        $_ENV = $this->bakEnvVars;
+        $_SERVER = $this->bakServerVars;
+    }
+
+    protected function getMockComposer()
+    {
+        $mockComposer = $this->getMockBuilder('Composer\Composer')->getMock();
+
+        return $mockComposer;
+    }
+
+    protected function getMockIO()
+    {
+        $mockIO = $this->getMockBuilder('Composer\IO\BaseIO')->getMockForAbstractClass();
+
+        return $mockIO;
     }
 
     public function testInstallPhantomJS()
     {
         // composer testing: mocks.. for nothing
         //InstallPhantomJS(Event $event)
-        $this->assertTrue(true); // contribute ?
+        $this->markTestSkipped('contribute ?');
     }
 
     public function testCopyPhantomJsBinaryToBinFolder()
     {
-        $this->assertTrue(true); // contribute ?
+        $this->markTestSkipped('contribute ?');
     }
 
     public function testDropClassWithPathToInstalledBinary()
@@ -46,51 +68,112 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
         $binaryPath = __DIR__ . '/a_fake_phantomjs_binary';
 
         // generate file
-        $this->assertTrue(\PhantomInstaller\Installer::dropClassWithPathToInstalledBinary($binaryPath));
-        $this->assertTrue(is_file(dirname(__DIR__).'/src/PhantomInstaller/PhantomBinary.php'));
+        $this->assertTrue($this->object->dropClassWithPathToInstalledBinary($binaryPath));
+        $this->assertTrue(is_file(dirname(__DIR__) . '/src/PhantomInstaller/PhantomBinary.php'));
 
         // test the generated file
-        require_once dirname(__DIR__).'/src/PhantomInstaller/PhantomBinary.php';
-        $this->assertSame($binaryPath,          \PhantomInstaller\PhantomBinary::BIN);
-        $this->assertSame(dirname($binaryPath), \PhantomInstaller\PhantomBinary::DIR);
+        require_once dirname(__DIR__) . '/src/PhantomInstaller/PhantomBinary.php';
+        $this->assertSame($binaryPath, PhantomBinary::BIN);
+        $this->assertSame(dirname($binaryPath), PhantomBinary::DIR);
     }
 
-    public function testGetCdnUrl()
+    /**
+     * @param array $extraConfig mock composer.json 'extra' config with this array
+     */
+    public function setUpForGetCdnUrl(array $extraConfig = array())
     {
+        $object = $this->object;
+        $mockComposer = $this->getMockComposer();
+        $object->setComposer($mockComposer);
+        $mockPackage = $this->getMockBuilder('Composer\Package\RootPackageInterface')->getMock();
+        $mockComposer->method('getPackage')->willReturn($mockPackage);
+        $mockPackage->method('getExtra')->willReturn($extraConfig);
+    }
+
+    /**
+     * @backupGlobals
+     */
+    public function testCdnUrlTrailingSlash()
+    {
+        $this->setUpForGetCdnUrl();
         $version = '1.0.0';
-        $cdnurl = \PhantomInstaller\Installer::getCdnUrl($version);
-        $this->assertSame('https://bitbucket.org/ariya/phantomjs/downloads/', $cdnurl);
+        $configuredCdnUrl = 'scheme://host/path'; // without slash
+        $_ENV['PHANTOMJS_CDNURL'] = $configuredCdnUrl;
+        $cdnurl = $this->object->getCdnUrl($version);
+        $this->assertRegExp('{(?:^|[^/])/$}', $cdnurl, 'CdnUrl should end with one slash.');
+    }
 
-        $_ENV['PHANTOMJS_CDNURL'] = 'https://cnpmjs.org/downloads'; // without slash
-        $cdnurl = \PhantomInstaller\Installer::getCdnUrl($version);
-        $this->assertSame('https://cnpmjs.org/downloads/', $cdnurl);
+    /**
+     * @backupGlobals
+     */
+    public function testSpecialGithubPatternForCdnUrl()
+    {
+        $this->setUpForGetCdnUrl();
+        $version = '1.0.0';
 
-        $_ENV['PHANTOMJS_CDNURL'] = 'https://github.com/medium/phantomjs';
-        $cdnurl = \PhantomInstaller\Installer::getCdnUrl($version);
-        $this->assertSame('https://github.com/medium/phantomjs/releases/download/v'.$version.'/', $cdnurl);
+        // Test rewrite for the Medium url as documented
+        $configuredCdnUrl = 'https://github.com/Medium/phantomjs';
+        $_ENV['PHANTOMJS_CDNURL'] = $configuredCdnUrl;
+        $cdnurl = $this->object->getCdnUrl($version);
+        $this->assertSame($configuredCdnUrl . '/releases/download/v' . $version . '/', $cdnurl);
 
-        unset($_ENV['PHANTOMJS_CDNURL']);
-        $_SERVER['PHANTOMJS_CDNURL'] = 'scheme://another-download-url';
-        $cdnurl = \PhantomInstaller\Installer::getCdnUrl($version);
-        $this->assertSame('scheme://another-download-url/', $cdnurl);
+        // Test that a longer url is not rewritten
+        $configuredCdnUrl = 'https://github.com/Medium/phantomjs/releases/download/v1.9.19/';
+        $_ENV['PHANTOMJS_CDNURL'] = $configuredCdnUrl;
+        $cdnurl = $this->object->getCdnUrl($version);
+        $this->assertSame($configuredCdnUrl, $cdnurl);
+    }
+
+    /**
+     * @backupGlobals
+     */
+    public function testGetCdnUrlConfigPrecedence()
+    {
+        $this->setUpForGetCdnUrl();
+        $version = '1.0.0';
+
+        // Test default URL is returned when there is no config
+        $cdnurlExpected = Installer::PHANTOMJS_CDNURL_DEFAULT;
+        $cdnurl = $this->object->getCdnUrl($version);
+        $this->assertSame($cdnurlExpected, $cdnurl);
+
+        // Test composer.json extra config overrides the default URL
+        $cdnurlExpected = 'scheme://host/extra-url/';
+        $extraData = array(Installer::PACKAGE_NAME => array('cdnurl' => $cdnurlExpected));
+        $this->setUpForGetCdnUrl($extraData);
+        $cdnurl = $this->object->getCdnUrl($version);
+        $this->assertSame($cdnurlExpected, $cdnurl);
+
+        // Test $_SERVER var overrides default URL and extra config
+        $cdnurlExpected = 'scheme://host/server-var-url/';
+        $_SERVER['PHANTOMJS_CDNURL'] = $cdnurlExpected;
+        $cdnurl = $this->object->getCdnUrl($version);
+        $this->assertSame($cdnurlExpected, $cdnurl);
+
+        // Test $_ENV var overrides default URL, extra config and $_SERVER var
+        $cdnurlExpected = 'scheme://host/env-var-url/';
+        $_ENV['PHANTOMJS_CDNURL'] = $cdnurlExpected;
+        $cdnurl = $this->object->getCdnUrl($version);
+        $this->assertSame($cdnurlExpected, $cdnurl);
     }
 
     public function testgetURL()
     {
+        $this->setUpForGetCdnUrl();
         $version = '1.0.0';
-        $os = \PhantomInstaller\Installer::getURL($version);
-        $this->assertTrue(is_string($os));
+        $url = $this->object->getURL($version);
+        $this->assertTrue(is_string($url));
     }
 
     public function testGetOS()
     {
-        $os = \PhantomInstaller\Installer::getOS();
+        $os = $this->object->getOS();
         $this->assertTrue(is_string($os));
     }
 
     public function testGetBitSize()
     {
-        $bitsize = \PhantomInstaller\Installer::getBitSize();
+        $bitsize = $this->object->getBitSize();
         $this->assertTrue(is_string($bitsize));
     }
 }

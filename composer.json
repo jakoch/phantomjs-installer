@@ -11,10 +11,18 @@
         }
     ],
     "require": {
+        "php": ">5.3",
         "ext-bz2": "*",
         "ext-openssl": "*"
     },
+    "require-dev": {
+        "composer/composer": "^1.2",
+        "phpunit/phpunit": "^4.8"
+    },
     "autoload": {
+        "psr-4": {
+            "PhantomInstaller\\Test\\" : "tests/"
+        },
         "psr-0": {
             "PhantomInstaller\\": "src/"
         }

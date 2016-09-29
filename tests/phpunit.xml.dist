@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- http://www.phpunit.de/manual/current/en/appendixes.configuration.html -->
 <phpunit
+    bootstrap                   = "./bootstrap.php"
     backupGlobals               = "false"
     backupStaticAttributes      = "false"
     colors                      = "true"
