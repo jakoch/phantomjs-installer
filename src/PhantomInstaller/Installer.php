@@ -483,6 +483,7 @@ class Installer
      * Checks (order by highest precedence on top):
      * - ENV var "PHANTOMJS_CDNURL"
      * - SERVER var "PHANTOMJS_CDNURL"
+     * - $['extra']['jakoch/phantomjs-installer']['cdnurl'] in composer.json
      * - default location (bitbucket)
      *
      * == Official Downloads
@@ -505,13 +506,13 @@ class Installer
      *  https://github.com/Medium/phantomjs/releases/download/v2.1.1/phantomjs-2.1.1-windows.zip
      *
      * @param string $version
-     * @param array $extraConfig Composer Root Package's extra config, if available
      *
      * @return string URL
      */
-    public function getCdnUrl($version, array $extraConfig = array())
+    public function getCdnUrl($version)
     {
         $url = '';
+        $extraData = $this->getComposer()->getPackage()->getExtra();
 
         // override the detection of the default URL
         // by checking for an env var and returning early
@@ -519,25 +520,27 @@ class Installer
             $url = $_ENV['PHANTOMJS_CDNURL'];
         } elseif (isset($_SERVER['PHANTOMJS_CDNURL'])) {
             $url = $_SERVER['PHANTOMJS_CDNURL'];
+        } elseif (isset($extraData[static::PACKAGE_NAME]['cdnurl'])) {
+            $url = $extraData[static::PACKAGE_NAME]['cdnurl'];
         }
 
-        if ($url !== '') {
-            $url = strtolower($url);
-
-            // add version to URL when using "github.com/medium/phantomjs"
-            if (strpos($url, 'github.com/medium/phantomjs') !== false) {
-                return 'https://github.com/medium/phantomjs/releases/download/v' . $version . '/';
-            }
-
-            // add slash at the end of the URL, if missing
-            if ($url[strlen($url) - 1] != '/') {
-                $url .= '/';
-            }
-
-            return $url;
+        if ($url == '') {
+            $url = static::PHANTOMJS_CDNURL_DEFAULT;
         }
 
-        return static::PHANTOMJS_CDNURL_DEFAULT;
+        $url = strtolower($url);
+
+        // add version to URL when using "github.com/medium/phantomjs"
+        if (strpos($url, 'github.com/medium/phantomjs') !== false) {
+            return 'https://github.com/medium/phantomjs/releases/download/v' . $version . '/';
+        }
+
+        // add slash at the end of the URL, if missing
+        if ($url[strlen($url) - 1] != '/') {
+            $url .= '/';
+        }
+
+        return $url;
     }
 
     /**
