@@ -8,6 +8,7 @@
 
 # Composer
 /composer.phar
+/composer.lock
 /vendor
 
 # Vagrant
@@ -15,3 +16,5 @@
 Vagrantfile
 
 .idea
+
+/src/PhantomInstaller/PhantomBinary.php

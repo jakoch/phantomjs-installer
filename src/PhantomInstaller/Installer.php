@@ -13,7 +13,8 @@ namespace PhantomInstaller;
 
 use Composer\Script\Event;
 use Composer\Composer;
-
+use Composer\Downloader\DownloadManager;
+use Composer\IO\IOInterface as IO;
 use Composer\Package\Package;
 use Composer\Package\RootPackageInterface;
 use Composer\Package\Version\VersionParser;
@@ -37,7 +38,7 @@ class Installer
      * You need to invoke it from the scripts section of your
      * "composer.json" file as "post-install-cmd" or "post-update-cmd".
      *
-     * @param Composer\Event $event
+     * @param Event $event
      */
     public static function installPhantomJS(Event $event)
     {
@@ -56,9 +57,9 @@ class Installer
 
         // do not install a lower or equal version
         $phantomJsBinary = self::getPhantomJsBinary($binDir);
-        if($phantomJsBinary) {
+        if ($phantomJsBinary) {
             $installedVersion = self::getPhantomJsVersionFromBinary($phantomJsBinary, $io);
-            if(version_compare($version, $installedVersion) !== 1) {
+            if (version_compare($version, $installedVersion) !== 1) {
                 $io->write('   - PhantomJS v' . $installedVersion . ' is already installed. Skipping the installation.');
                 return;
             }
@@ -69,8 +70,7 @@ class Installer
 
         // Download the Archive
 
-        if(self::download($io, $downloadManager, $targetDir, $version))
-        {
+        if (self::download($io, $downloadManager, $targetDir, $version)) {
             // Copy only the PhantomJS binary from the installation "target dir" to the "bin" folder
 
             self::copyPhantomJsBinaryToBinFolder($targetDir, $binDir);
@@ -81,18 +81,17 @@ class Installer
      * Get PhantomJS application version. Equals running "phantomjs -v" on the CLI.
      *
      * @param string $binary
-     * @param Composer\IO $io
+     * @param IO $io
      * @return string PhantomJS Version
      */
-    public static function getPhantomJsVersionFromBinary($binary, $io)
+    public static function getPhantomJsVersionFromBinary($binary, IO $io)
     {
         try {
             $cmd = escapeshellarg($binary) . ' -v';
             exec($cmd, $stdout);
             $version = $stdout[0];
             return $version;
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $io->notice("<warning>Caught exception while checking PhantomJS version:\n" . $e->getMessage() . '</warning>');
             $io->notice('Re-downloading PhantomJS');
             return false;
@@ -127,18 +126,17 @@ class Installer
      * Downloads are automatically retried with a lower version number,
      * when the resource it not found (404).
      *
-     * @param Composer\IO $io
-     * @param Composer\DownloadManager $downloadManager
+     * @param IO $io
+     * @param DownloadManager $downloadManager
      * @param string $targetDir
      * @param string $version
      * @return boolean
      */
-    public static function download($io, $downloadManager, $targetDir, $version)
+    public static function download(IO $io, DownloadManager $downloadManager, $targetDir, $version)
     {
         $retries = count(self::getPhantomJsVersions());
 
-        while ($retries--)
-        {
+        while ($retries--) {
             $package = self::createComposerInMemoryPackage($targetDir, $version);
 
             try {
@@ -147,11 +145,11 @@ class Installer
             } catch (\Composer\Downloader\TransportException $e) {
                 if ($e->getStatusCode() === 404) {
                     $version = self::getLowerVersion($version);
-                    $io->write('<warning>Retrying the download with a lower version number: "'. $version .'".</warning>');
+                    $io->write('<warning>Retrying the download with a lower version number: "' . $version . '".</warning>');
                 }
             } catch (\Exception $e) {
                 $message = $e->getMessage();
-                $io->write(PHP_EOL . '<error>While downloading version '. $version. ' the following error accoured: '. $message .'</error>');
+                $io->write(PHP_EOL . '<error>While downloading version ' . $version . ' the following error accoured: ' . $message . '</error>');
                 return false;
             }
         }
@@ -162,7 +160,7 @@ class Installer
      *
      * @param string $targetDir
      * @param string $version
-     * @return Composer\Package
+     * @return Package
      */
     public static function createComposerInMemoryPackage($targetDir, $version)
     {
@@ -210,10 +208,9 @@ class Installer
      */
     public static function getLowerVersion($old_version)
     {
-        foreach(self::getPhantomJsVersions() as $idx => $version)
-        {
+        foreach (self::getPhantomJsVersions() as $idx => $version) {
             // if $old_version is bigger than $version from versions array, return $version
-            if(version_compare($old_version, $version) == 1) {
+            if (version_compare($old_version, $version) == 1) {
                 return $version;
             }
         }
@@ -229,22 +226,22 @@ class Installer
      * @param Composer $composer
      * @return string $version Version
      */
-    public static function getVersion($composer)
+    public static function getVersion(Composer $composer)
     {
         // try getting the version from the local repository
         $packages = $composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
-        foreach($packages as $package) {
-            if($package->getName() === self::PACKAGE_NAME) {
+        foreach ($packages as $package) {
+            if ($package->getName() === self::PACKAGE_NAME) {
                 $version = $package->getPrettyVersion();
                 break;
             }
         }
 
         // let's take a look at the aliases
-        if($package->getVersion() === '9999999-dev') { // this indicates the version alias???
+        if ($package->getVersion() === '9999999-dev') { // this indicates the version alias???
             $aliases = $composer->getLocker()->getAliases();
-            foreach($aliases as $idx => $alias) {
-                if($alias['package'] === self::PACKAGE_NAME) {
+            foreach ($aliases as $idx => $alias) {
+                if ($alias['package'] === self::PACKAGE_NAME) {
                     return $alias['alias'];
                 }
             }
@@ -256,17 +253,17 @@ class Installer
         }
 
         // grab version from commit-reference, e.g. "dev-master#<commit-ref> as version"
-        if(preg_match('/dev-master#(?:.*)(\d.\d.\d)/i', $version, $matches)) {
+        if (preg_match('/dev-master#(?:.*)(\d.\d.\d)/i', $version, $matches)) {
             return $matches[1];
         }
 
         // grab version from a Composer patch version tag with a patch level, like "1.9.8-p02"
-        if(preg_match('/(\d.\d.\d)(?:(?:-p\d{2})?)/i', $version, $matches)) {
+        if (preg_match('/(\d.\d.\d)(?:(?:-p\d{2})?)/i', $version, $matches)) {
             return $matches[1];
         }
 
         // let's take a look at the root package
-        if(!empty($version)) {
+        if (!empty($version)) {
             $version = self::getRequiredVersion($composer->getPackage());
         }
 
@@ -277,7 +274,6 @@ class Installer
      * Returns the version for the given package either from the "require" or "require-dev" packages array.
      *
      * @param RootPackageInterface $package
-     * @param string $packageName
      * @throws \RuntimeException
      * @return mixed
      */
@@ -295,8 +291,8 @@ class Installer
      * Copies the PhantomJs binary to the bin folder.
      * Takes different "folder structure" of the archives and different "binary file names" into account.
      *
-     * @param  string $targetDir  path to /vendor/jakoch/phantomjs
-     * @param  string $binDir     path to binary folder
+     * @param  string $targetDir path to /vendor/jakoch/phantomjs
+     * @param  string $binDir path to binary folder
      *
      * @return bool True, if file dropped. False, otherwise.
      */
@@ -321,7 +317,7 @@ class Installer
              * For versions up to v1.9.8, the executables resides at the root.
              * From v2.0.0 on, the executable resides in the bin folder.
              */
-            if(is_file($targetDir . '/phantomjs.exe')) {
+            if (is_file($targetDir . '/phantomjs.exe')) {
                 $sourceName = str_replace('/bin', '', $sourceName);
             }
 
@@ -350,14 +346,13 @@ class Installer
      * $bin = PhantomInstaller\PhantomBinary::getBin();
      * $dir = PhantomInstaller\PhantomBinary::getDir();
      *
-     * @param  string $targetDir  path to /vendor/jakoch/phantomjs
-     * @param  string $BinaryPath full path to binary
+     * @param  string $binaryPath full path to binary
      *
      * @return bool True, if file dropped. False, otherwise.
      */
     public static function dropClassWithPathToInstalledBinary($binaryPath)
     {
-        $code  = "<?php\n";
+        $code = "<?php\n";
         $code .= "\n";
         $code .= "namespace PhantomInstaller;\n";
         $code .= "\n";
@@ -383,7 +378,7 @@ class Installer
             $code
         );
 
-        return (bool) file_put_contents(__DIR__ . '/PhantomBinary.php', $fileContent);
+        return (bool)file_put_contents(__DIR__ . '/PhantomBinary.php', $fileContent);
     }
 
     /**
@@ -395,7 +390,7 @@ class Installer
     public static function getURL($version)
     {
         $file = false;
-        $os  = self::getOS();
+        $os = self::getOS();
         $cdn_url = self::getCdnUrl($version);
 
         if ($os === 'windows') {
@@ -430,8 +425,17 @@ class Installer
     }
 
     /**
+     * Default CDN URL
+     */
+    const PHANTOMJS_CDNURL_DEFAULT = 'https://bitbucket.org/ariya/phantomjs/downloads/';
+
+    /**
      * Returns the base URL for downloads.
-     * Uses the ENV var "PHANTOMJS_CDNURL" or returns the default location (bitbucket).
+     *
+     * Checks (order by highest precedence on top):
+     * - ENV var "PHANTOMJS_CDNURL"
+     * - SERVER var "PHANTOMJS_CDNURL"
+     * - default location (bitbucket)
      *
      * == Official Downloads
      *
@@ -442,19 +446,22 @@ class Installer
      *
      * NPM USA
      *  https://cnpmjs.org/downloads
-     *  https://cnpmjs.org/mirrors/phantomjs/phantomjs-2.1.1-windows.zip 
+     *  https://cnpmjs.org/mirrors/phantomjs/phantomjs-2.1.1-windows.zip
      *
      * NPM China
      *  https://npm.taobao.org/mirrors/phantomjs/
      *  https://npm.taobao.org/mirrors/phantomjs/phantomjs-2.1.1-windows.zip
-     * 
+     *
      * Github, USA, SF
-     *  https://github.com/Medium/phantomjs/  
+     *  https://github.com/Medium/phantomjs/
      *  https://github.com/Medium/phantomjs/releases/download/v2.1.1/phantomjs-2.1.1-windows.zip
+     *
+     * @param string $version
+     * @param array $extraConfig Composer Root Package's extra config, if available
      *
      * @return string URL
      */
-    public static function getCdnUrl($version)
+    public static function getCdnUrl($version, array $extraConfig = [])
     {
         $url = '';
 
@@ -462,28 +469,27 @@ class Installer
         // by checking for an env var and returning early
         if (isset($_ENV['PHANTOMJS_CDNURL'])) {
             $url = $_ENV['PHANTOMJS_CDNURL'];
-        }
-        elseif (isset($_SERVER['PHANTOMJS_CDNURL'])) {
+        } elseif (isset($_SERVER['PHANTOMJS_CDNURL'])) {
             $url = $_SERVER['PHANTOMJS_CDNURL'];
         }
 
-        if($url !== '') {
+        if ($url !== '') {
             $url = strtolower($url);
 
             // add version to URL when using "github.com/medium/phantomjs"
-            if(strpos($url, 'github.com/medium/phantomjs') !== false) {
-                return 'https://github.com/medium/phantomjs/releases/download/v'.$version.'/';
+            if (strpos($url, 'github.com/medium/phantomjs') !== false) {
+                return 'https://github.com/medium/phantomjs/releases/download/v' . $version . '/';
             }
 
             // add slash at the end of the URL, if missing
-            if($url[strlen($url)-1] != '/') {                
+            if ($url[strlen($url) - 1] != '/') {
                 $url .= '/';
             }
 
             return $url;
         }
 
-        return 'https://bitbucket.org/ariya/phantomjs/downloads/';
+        return static::PHANTOMJS_CDNURL_DEFAULT;
     }
 
     /**
@@ -498,7 +504,7 @@ class Installer
         if (isset($_ENV['PHANTOMJS_PLATFORM'])) {
             return strtolower($_ENV['PHANTOMJS_PLATFORM']);
         }
-        
+
         if (isset($_SERVER['PHANTOMJS_PLATFORM'])) {
             return strtolower($_SERVER['PHANTOMJS_PLATFORM']);
         }
@@ -507,7 +513,8 @@ class Installer
 
         if (strpos($uname, 'darwin') !== false ||
             strpos($uname, 'openbsd') !== false ||
-            strpos($uname, 'freebsd') !== false) {
+            strpos($uname, 'freebsd') !== false
+        ) {
             return 'macosx';
         } elseif (strpos($uname, 'win') !== false) {
             return 'windows';
@@ -530,7 +537,7 @@ class Installer
         if (isset($_ENV['PHANTOMJS_BITSIZE'])) {
             return strtolower($_ENV['PHANTOMJS_BITSIZE']);
         }
-        
+
         if (isset($_SERVER['PHANTOMJS_BITSIZE'])) {
             return strtolower($_SERVER['PHANTOMJS_BITSIZE']);
         }
@@ -543,6 +550,6 @@ class Installer
             return '64';
         }
 
-        return (string) PHP_INT_SIZE; // 16-bit?
+        return (string)PHP_INT_SIZE; // 16-bit?
     }
 }
