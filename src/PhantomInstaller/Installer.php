@@ -11,13 +11,13 @@
 
 namespace PhantomInstaller;
 
-use Composer\Script\Event;
 use Composer\Composer;
-use Composer\Downloader\DownloadManager;
-use Composer\IO\IOInterface as IO;
+use Composer\Downloader\TransportException;
+use Composer\IO\BaseIO as IO;
 use Composer\Package\Package;
 use Composer\Package\RootPackageInterface;
 use Composer\Package\Version\VersionParser;
+use Composer\Script\Event;
 
 class Installer
 {
@@ -28,6 +28,54 @@ class Installer
     const PHANTOMJS_CHMODE = 0770; // octal !
 
     const PACKAGE_NAME = 'jakoch/phantomjs-installer';
+
+    /** @var Composer */
+    protected $composer;
+
+    /** @var IO */
+    protected $io;
+
+    /**
+     * @return Composer
+     */
+    public function getComposer()
+    {
+        return $this->composer;
+    }
+
+    /**
+     * @param Composer $composer
+     * @return static
+     */
+    public function setComposer(Composer $composer)
+    {
+        $this->composer = $composer;
+        return $this;
+    }
+
+    /**
+     * @return IO
+     */
+    public function getIO()
+    {
+        return $this->io;
+    }
+
+    /**
+     * @param IO $io
+     * @return static
+     */
+    public function setIO(IO $io)
+    {
+        $this->io = $io;
+        return $this;
+    }
+
+    public function __construct(Composer $composer, IO $io)
+    {
+        $this->setComposer($composer);
+        $this->setIO($io);
+    }
 
     /**
      * installPhantomJS is the main function of the install script.
@@ -42,57 +90,58 @@ class Installer
      */
     public static function installPhantomJS(Event $event)
     {
-        $composer = $event->getComposer();
+        $installer = new static($event->getComposer(), $event->getIO());
+        return $installer->__invoke();
+    }
 
-        $version = self::getVersion($composer);
+    public function __invoke()
+    {
+        $version = $this->getVersion();
 
-        $config = $composer->getConfig();
+        $config = $this->getComposer()->getConfig();
 
         $binDir = $config->get('bin-dir');
 
         // the installation folder depends on the vendor-dir (default prefix is './vendor')
-        $targetDir = $config->get('vendor-dir') . self::PHANTOMJS_TARGETDIR;
+        $targetDir = $config->get('vendor-dir') . static::PHANTOMJS_TARGETDIR;
 
-        $io = $event->getIO();
+        $io = $this->getIO();
 
         // do not install a lower or equal version
-        $phantomJsBinary = self::getPhantomJsBinary($binDir);
+        $phantomJsBinary = $this->getPhantomJsBinary($binDir);
         if ($phantomJsBinary) {
-            $installedVersion = self::getPhantomJsVersionFromBinary($phantomJsBinary, $io);
+            $installedVersion = $this->getPhantomJsVersionFromBinary($phantomJsBinary);
             if (version_compare($version, $installedVersion) !== 1) {
                 $io->write('   - PhantomJS v' . $installedVersion . ' is already installed. Skipping the installation.');
                 return;
             }
         }
 
-        /* @var \Composer\Downloader\DownloadManager $downloadManager */
-        $downloadManager = $composer->getDownloadManager();
-
         // Download the Archive
-
-        if (self::download($io, $downloadManager, $targetDir, $version)) {
+        if ($this->download($targetDir, $version)) {
             // Copy only the PhantomJS binary from the installation "target dir" to the "bin" folder
 
-            self::copyPhantomJsBinaryToBinFolder($targetDir, $binDir);
+            $this->copyPhantomJsBinaryToBinFolder($targetDir, $binDir);
         }
     }
 
     /**
      * Get PhantomJS application version. Equals running "phantomjs -v" on the CLI.
      *
-     * @param string $binary
-     * @param IO $io
+     * @param string $pathToBinary
      * @return string PhantomJS Version
      */
-    public static function getPhantomJsVersionFromBinary($binary, IO $io)
+    public function getPhantomJsVersionFromBinary($pathToBinary)
     {
+        $io = $this->getIO();
+
         try {
-            $cmd = escapeshellarg($binary) . ' -v';
+            $cmd = escapeshellarg($pathToBinary) . ' -v';
             exec($cmd, $stdout);
             $version = $stdout[0];
             return $version;
         } catch (\Exception $e) {
-            $io->notice("<warning>Caught exception while checking PhantomJS version:\n" . $e->getMessage() . '</warning>');
+            $io->warning("Caught exception while checking PhantomJS version:\n" . $e->getMessage());
             $io->notice('Re-downloading PhantomJS');
             return false;
         }
@@ -104,9 +153,9 @@ class Installer
      * @param string $binDir
      * @return string|bool Returns false, if file not found, else filepath.
      */
-    public static function getPhantomJsBinary($binDir)
+    public function getPhantomJsBinary($binDir)
     {
-        $os = self::getOS();
+        $os = $this->getOS();
 
         $binary = $binDir . '/phantomjs';
 
@@ -126,30 +175,30 @@ class Installer
      * Downloads are automatically retried with a lower version number,
      * when the resource it not found (404).
      *
-     * @param IO $io
-     * @param DownloadManager $downloadManager
      * @param string $targetDir
      * @param string $version
      * @return boolean
      */
-    public static function download(IO $io, DownloadManager $downloadManager, $targetDir, $version)
+    public function download($targetDir, $version)
     {
-        $retries = count(self::getPhantomJsVersions());
+        $io = $this->getIO();
+        $downloadManager = $this->getComposer()->getDownloadManager();
+        $retries = count($this->getPhantomJsVersions());
 
         while ($retries--) {
-            $package = self::createComposerInMemoryPackage($targetDir, $version);
+            $package = $this->createComposerInMemoryPackage($targetDir, $version);
 
             try {
                 $downloadManager->download($package, $targetDir, false);
                 return true;
-            } catch (\Composer\Downloader\TransportException $e) {
+            } catch (TransportException $e) {
                 if ($e->getStatusCode() === 404) {
-                    $version = self::getLowerVersion($version);
-                    $io->write('<warning>Retrying the download with a lower version number: "' . $version . '".</warning>');
+                    $version = $this->getLowerVersion($version);
+                    $io->warning('Retrying the download with a lower version number: "' . $version . '"');
                 }
             } catch (\Exception $e) {
                 $message = $e->getMessage();
-                $io->write(PHP_EOL . '<error>While downloading version ' . $version . ' the following error accoured: ' . $message . '</error>');
+                $io->error(PHP_EOL . '<error>While downloading version ' . $version . ' the following error accoured: ' . $message . '</error>');
                 return false;
             }
         }
@@ -162,14 +211,14 @@ class Installer
      * @param string $version
      * @return Package
      */
-    public static function createComposerInMemoryPackage($targetDir, $version)
+    public function createComposerInMemoryPackage($targetDir, $version)
     {
-        $url = self::getURL($version);
+        $url = $this->getURL($version);
 
         $versionParser = new VersionParser();
         $normVersion = $versionParser->normalize($version);
 
-        $package = new Package(self::PHANTOMJS_NAME, $normVersion, $version);
+        $package = new Package(static::PHANTOMJS_NAME, $normVersion, $version);
         $package->setTargetDir($targetDir);
         $package->setInstallationSource('dist');
         $package->setDistType(pathinfo($url, PATHINFO_EXTENSION) === 'zip' ? 'zip' : 'tar'); // set zip, tarball
@@ -183,7 +232,7 @@ class Installer
      *
      * @return array PhantomJs version numbers
      */
-    public static function getPhantomJsVersions()
+    public function getPhantomJsVersions()
     {
         return array('2.1.1', '2.0.0', '1.9.8', '1.9.7');
     }
@@ -193,9 +242,9 @@ class Installer
      *
      * @return string Latest PhantomJs Version.
      */
-    public static function getLatestPhantomJsVersion()
+    public function getLatestPhantomJsVersion()
     {
-        $versions = self::getPhantomJsVersions();
+        $versions = $this->getPhantomJsVersions();
 
         return $versions[0];
     }
@@ -206,9 +255,9 @@ class Installer
      * @param string $old_version Version number
      * @return string Lower version number.
      */
-    public static function getLowerVersion($old_version)
+    public function getLowerVersion($old_version)
     {
-        foreach (self::getPhantomJsVersions() as $idx => $version) {
+        foreach ($this->getPhantomJsVersions() as $idx => $version) {
             // if $old_version is bigger than $version from versions array, return $version
             if (version_compare($old_version, $version) == 1) {
                 return $version;
@@ -223,15 +272,16 @@ class Installer
      * secondly, in the root package.
      * A version specification of "dev-master#<commit-reference>" is disallowed.
      *
-     * @param Composer $composer
      * @return string $version Version
      */
-    public static function getVersion(Composer $composer)
+    public function getVersion()
     {
+        $composer = $this->getComposer();
+
         // try getting the version from the local repository
         $packages = $composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
         foreach ($packages as $package) {
-            if ($package->getName() === self::PACKAGE_NAME) {
+            if ($package->getName() === static::PACKAGE_NAME) {
                 $version = $package->getPrettyVersion();
                 break;
             }
@@ -241,7 +291,7 @@ class Installer
         if ($package->getVersion() === '9999999-dev') { // this indicates the version alias???
             $aliases = $composer->getLocker()->getAliases();
             foreach ($aliases as $idx => $alias) {
-                if ($alias['package'] === self::PACKAGE_NAME) {
+                if ($alias['package'] === static::PACKAGE_NAME) {
                     return $alias['alias'];
                 }
             }
@@ -249,7 +299,7 @@ class Installer
 
         // fallback to the hardcoded latest version, if "dev-master" was set
         if ($version === 'dev-master') {
-            return self::getLatestPhantomJsVersion();
+            return $this->getLatestPhantomJsVersion();
         }
 
         // grab version from commit-reference, e.g. "dev-master#<commit-ref> as version"
@@ -264,7 +314,7 @@ class Installer
 
         // let's take a look at the root package
         if (!empty($version)) {
-            $version = self::getRequiredVersion($composer->getPackage());
+            $version = $this->getRequiredVersion($composer->getPackage());
         }
 
         return $version;
@@ -277,14 +327,14 @@ class Installer
      * @throws \RuntimeException
      * @return mixed
      */
-    public static function getRequiredVersion(RootPackageInterface $package)
+    public function getRequiredVersion(RootPackageInterface $package)
     {
         foreach (array($package->getRequires(), $package->getDevRequires()) as $requiredPackages) {
-            if (isset($requiredPackages[self::PACKAGE_NAME])) {
-                return $requiredPackages[self::PACKAGE_NAME]->getPrettyConstraint();
+            if (isset($requiredPackages[static::PACKAGE_NAME])) {
+                return $requiredPackages[static::PACKAGE_NAME]->getPrettyConstraint();
             }
         }
-        throw new \RuntimeException('Can not determine required version of ' . self::PACKAGE_NAME);
+        throw new \RuntimeException('Can not determine required version of ' . static::PACKAGE_NAME);
     }
 
     /**
@@ -296,13 +346,13 @@ class Installer
      *
      * @return bool True, if file dropped. False, otherwise.
      */
-    public static function copyPhantomJsBinaryToBinFolder($targetDir, $binDir)
+    public function copyPhantomJsBinaryToBinFolder($targetDir, $binDir)
     {
         if (!is_dir($binDir)) {
             mkdir($binDir);
         }
 
-        $os = self::getOS();
+        $os = $this->getOS();
 
         $sourceName = '/bin/phantomjs';
         $targetName = $binDir . '/phantomjs';
@@ -330,7 +380,7 @@ class Installer
             chmod($targetName, static::PHANTOMJS_CHMODE);
         }
 
-        self::dropClassWithPathToInstalledBinary($targetName);
+        $this->dropClassWithPathToInstalledBinary($targetName);
     }
 
     /**
@@ -350,7 +400,7 @@ class Installer
      *
      * @return bool True, if file dropped. False, otherwise.
      */
-    public static function dropClassWithPathToInstalledBinary($binaryPath)
+    public function dropClassWithPathToInstalledBinary($binaryPath)
     {
         $code = "<?php\n";
         $code .= "\n";
@@ -387,18 +437,18 @@ class Installer
      * @param string $version
      * @return string Download URL
      */
-    public static function getURL($version)
+    public function getURL($version)
     {
         $file = false;
-        $os = self::getOS();
-        $cdn_url = self::getCdnUrl($version);
+        $os = $this->getOS();
+        $cdn_url = $this->getCdnUrl($version);
 
         if ($os === 'windows') {
             $file = 'phantomjs-' . $version . '-windows.zip';
         }
 
         if ($os === 'linux') {
-            $bitsize = self::getBitSize();
+            $bitsize = $this->getBitSize();
 
             if ($bitsize === '32') {
                 $file = 'phantomjs-' . $version . '-linux-i686.tar.bz2';
@@ -461,7 +511,7 @@ class Installer
      *
      * @return string URL
      */
-    public static function getCdnUrl($version, array $extraConfig = [])
+    public function getCdnUrl($version, array $extraConfig = array())
     {
         $url = '';
 
@@ -497,7 +547,7 @@ class Installer
      *
      * @return string OS, e.g. macosx, windows, linux.
      */
-    public static function getOS()
+    public function getOS()
     {
         // override the detection of the operation system
         // by checking for an env var and returning early
@@ -530,7 +580,7 @@ class Installer
      *
      * @return string BitSize, e.g. 32, 64.
      */
-    public static function getBitSize()
+    public function getBitSize()
     {
         // override the detection of the bitsize
         // by checking for an env var and returning early
