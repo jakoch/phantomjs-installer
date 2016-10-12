@@ -126,8 +126,12 @@ You can override the default download location of the PhantomJS binary file by s
   },
  ```
 
+**Default Download Location**
+
 The default download location is Bitbucket: `https://api.bitbucket.org/2.0/repositories/ariya/phantomjs/downloads/`.
 You don't need to set it explicitly. It's used, when `PHANTOMJS_CDNURL` is not set.
+
+**Mirrors**
 
 You might use one of the following mirror URLs as a value for `PHANTOMJS_CDNURL`:
   - `https://cnpmjs.org/downloads/` - USA, San Mateo (47.88.189.193)
