@@ -4,6 +4,13 @@
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [2.1.1-p07] - 2016-10-12
+
+- general code cleanup / refactoring / removed static functions
+- [Issue #35](https://github.com/jakoch/phantomjs-installer/issues/35): Unable to install / bitbucket failures
+  - you might now use the config section extra of your `composer.json` file to set the CDN_URL
+  - changed the default download location for BitBucket to https://api.bitbucket.org/2.0/ (API v2)
+
 ## [2.1.1-p06] - 2016-08-09
 
 - [Issue #34](https://github.com/jakoch/phantomjs-installer/issues/34): Bitbucket downloading issue 
@@ -55,7 +62,8 @@
 - Initial Release
 - grab version number from explicit commit references, issue #8
 
-[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p06...HEAD
+[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p07...HEAD
+[2.1.1-p06]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p06...2.1.1-p07
 [2.1.1-p06]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p05...2.1.1-p06
 [2.1.1-p05]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p04...2.1.1-p05
 [2.1.1-p04]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p03...2.1.1-p04
