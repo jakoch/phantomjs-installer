@@ -475,7 +475,7 @@ class Installer
     /**
      * Default CDN URL
      */
-    const PHANTOMJS_CDNURL_DEFAULT = 'https://bitbucket.org/ariya/phantomjs/downloads/';
+    const PHANTOMJS_CDNURL_DEFAULT = 'https://api.bitbucket.org/2.0/repositories/ariya/phantomjs/downloads/';
 
     /**
      * Returns the base URL for downloads.
@@ -490,6 +490,7 @@ class Installer
      *
      * The old versions up to v1.9.2 were hosted on https://phantomjs.googlecode.com/files/
      * Newer versions are hosted on https://bitbucket.org/ariya/phantomjs/downloads/
+     * Downloads via APIv2: https://api.bitbucket.org/2.0/repositories/ariya/phantomjs/downloads/
      *
      * == Mirrors
      *
