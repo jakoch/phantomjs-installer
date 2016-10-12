@@ -116,16 +116,17 @@ Possible values for
 You can override the default download location of the PhantomJS binary file by setting it in one of these locations. Listed in order of precedence (highest first):
 * The environment variable `PHANTOMJS_CDNURL`
 * The server variable `PHANTOMJS_CDNURL`
-* At `$['extra']['jakoch/phantomjs-installer']['cdnurl']` in your composer.json. E.g.:
-  ```json
+* In your `composer.json` by using `$['extra']['jakoch/phantomjs-installer']['cdnurl']`:
+
+ ```json
   "extra": {
     "jakoch/phantomjs-installer": {
       "cdnurl": "https://github.com/Medium/phantomjs/releases/download/v1.9.19/"
     }
   },
-  ```
+ ```
 
-The default download location is Bitbucket: `https://bitbucket.org/ariya/phantomjs/downloads/`.
+The default download location is Bitbucket: `https://api.bitbucket.org/2.0/repositories/ariya/phantomjs/downloads/`.
 You don't need to set it explicitly. It's used, when `PHANTOMJS_CDNURL` is not set.
 
 You might use one of the following mirror URLs as a value for `PHANTOMJS_CDNURL`:
