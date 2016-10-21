@@ -16,7 +16,7 @@ To install PhantomJS as a local, per-project dependency to your project, simply 
 ```json
 {
     "require": {
-        "jakoch/phantomjs-installer": "2.1.1-p06"
+        "jakoch/phantomjs-installer": "^2.1"
     },
     "config": {
         "bin-dir": "bin"
@@ -46,8 +46,12 @@ will be installed into the `/bin` folder and updated alongside the project's Com
 
 ## How to require specific versions of PhantomJS?
 
-1. The version number of the package specifies the PhantomJS version. When you specify `2.1.1`. 
-  - Composer fetches the 2.1.1 tag(!) of the installer. The installer fetches the 2.1.1 version of PhantomJS.
+1. The version number of the package specifies the PhantomJS version. When you specify:
+  - `^2.1`: Composer fetches the latest installer version above v2.1. The installer fetches the latest version of PhantomJS.
+  - `2.1.1-p07`: Composer fetches the 2.1.1-p07 tag of the installer. The installer fetches the 2.1.1 version of PhantomJS.
+  - `2.1.1`: Composer fetches the 2.1.1 tag of the installer. The installer fetches the 2.1.1 version of PhantomJS.
+  - `1.9.8`: Composer fetches the 1.9.8 tag of the installer. The installer fetches the 1.9.8 version of PhantomJS. 
+    - This will also fetch an old installer tag. Please use the syntax for a version alias instead (see item 3 below).
 2. If you specify `dev-master`, the latest version will be fetched.
   - Composer fetches the latest version of the installer. The installer fetches the latest version of PhantomJS.
 3. You might also specify the PhantomJS version by using a version alias,  e.g. `dev-master as <version>`. 
