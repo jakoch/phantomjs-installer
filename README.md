@@ -8,6 +8,15 @@ phantomjs-installer
 
 A Composer package which installs the PhantomJS binary (Linux, Windows, Mac) into `/bin` of your project.
 
+##### Table of Contents 
+
+- [Installation](#installation)
+- [How to require a specific version of PhantomJS?](#how-to-require-specific-versions-of-phantomjs)
+- [How does this work internally?](#how-does-this-work-internally)
+- [How to access the binary easily by using PhantomInstaller\PhantomBinary?](#phantombinary)
+- [How to package for another platform by overriding platform requirements?](#override-platform-requirements)
+- [How to use a Mirror or a custom CDN URL for downloading?](#downloading-from-a-mirror)
+
 ## Installation
 
 To install PhantomJS as a local, per-project dependency to your project, simply add a dependency on `jakoch/phantomjs-installer` to your project's `composer.json` file.
@@ -34,7 +43,8 @@ To install PhantomJS as a local, per-project dependency to your project, simply 
 
 For a development dependency, change `require` to `require-dev`.
 
-The download source used is: https://bitbucket.org/ariya/phantomjs/downloads/
+The default download source used is: https://bitbucket.org/ariya/phantomjs/downloads/
+You might change it by setting a custom CDN URL, which is explained in the section "[Downloading from a mirror](#downloading-from-a-mirror)".
 
 By setting the Composer configuration directive `bin-dir`, the [vendor binaries](https://getcomposer.org/doc/articles/vendor-binaries.md#can-vendor-binaries-be-installed-somewhere-other-than-vendor-bin-) will be installed into the defined folder.
 **Important! Composer will install the binaries into `vendor\bin` by default.**
