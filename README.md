@@ -62,22 +62,25 @@ will be installed into the `/bin` folder and updated alongside the project's Com
 ## How does this work internally?
 
 1. **Fetching the PhantomJS Installer**
-In your composer.json you require the package "phantomjs-installer".
-The package is fetched by composer and stored into `./vendor/jakoch/phantomjs-installer`.
-It contains only one file the `PhantomInstaller\\Installer`.
+
+ In your composer.json you require the package "phantomjs-installer".
+ The package is fetched by composer and stored into `./vendor/jakoch/phantomjs-installer`.
+ It contains only one file the `PhantomInstaller\\Installer`.
 
 2. **Platform-specific download of PhantomJS**
-The `PhantomInstaller\\Installer` is run as a "post-install-cmd". That's why you need the "scripts" section in your "composer.json".
-The installer creates a new composer in-memory package "phantomjs",
-detects your OS and downloads the correct Phantom version to the folder `./vendor/jakoch/phantomjs`.
-All PhantomJS files reside there, especially the `examples`.
+
+ The `PhantomInstaller\\Installer` is run as a "post-install-cmd". That's why you need the "scripts" section in your "composer.json".
+ The installer creates a new composer in-memory package "phantomjs",
+ detects your OS and downloads the correct Phantom version to the folder `./vendor/jakoch/phantomjs`.
+ All PhantomJS files reside there, especially the `examples`.
 
 3. **Installation into `/bin` folder**
-The binary is then copied from `./vendor/jakoch/phantomjs` to your composer configured `bin-dir` folder.
+
+ The binary is then copied from `./vendor/jakoch/phantomjs` to your composer configured `bin-dir` folder.
 
 4. **Generation of PhantomBinary**
 
-The installer generates a PHP file `PhantomInstaller\\PhantomBinary` and inserts the path to the binary.
+ The installer generates a PHP file `PhantomInstaller\\PhantomBinary` and inserts the path to the binary.
 
 ## PhantomBinary
 
