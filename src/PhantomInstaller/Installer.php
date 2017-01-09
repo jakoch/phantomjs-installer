@@ -195,6 +195,11 @@ class Installer
                 if ($e->getStatusCode() === 404) {
                     $version = $this->getLowerVersion($version);
                     $io->warning('Retrying the download with a lower version number: "' . $version . '"');
+                } else {
+                    $message = $e->getMessage();
+                    $code = $e->getStatusCode();
+                    $io->error(PHP_EOL . '<error>TransportException: "' . $message . '". HTTP status code: ' . $code . '</error>');
+                    return false;
                 }
             } catch (\Exception $e) {
                 $message = $e->getMessage();
