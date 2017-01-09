@@ -4,6 +4,8 @@
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+- [Issue #42](https://github.com/jakoch/phantomjs-installer/issues/42): fix silent TransportExceptions (handle all TransportExceptions with HttpStatusCode != 404)
+
 ## [2.1.1-p07] - 2016-10-12
 
 - general code cleanup / refactoring / removed static functions
