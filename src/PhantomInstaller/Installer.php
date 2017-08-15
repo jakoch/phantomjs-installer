@@ -3,7 +3,7 @@
 /*
  * This file is part of the "jakoch/phantomjs-installer" package.
  *
- * Copyright (c) 2013-2016 Jens-André Koch <jakoch@web.de>
+ * Copyright (c) 2013-2017 Jens-André Koch <jakoch@web.de>
  *
  * The content is released under the MIT License. Please view
  * the LICENSE file that was distributed with this source code.
@@ -24,8 +24,6 @@ class Installer
     const PHANTOMJS_NAME = 'PhantomJS';
 
     const PHANTOMJS_TARGETDIR = '/jakoch/phantomjs';
-
-    const PHANTOMJS_CHMODE = 0770; // octal !
 
     const PACKAGE_NAME = 'jakoch/phantomjs-installer';
 
@@ -379,8 +377,10 @@ class Installer
         }
 
         if ($os !== 'unknown') {
-            copy($targetDir . $sourceName, $targetName);
-            chmod($targetName, static::PHANTOMJS_CHMODE);
+            $tempTargetName = tempnam($binDir, 'phantomjs_temp_');
+            copy($targetDir . $sourceName, $tempTargetName);
+            chmod($tempTargetName, 0777 & ~umask());
+            rename($tempTargetName, $targetName);
         }
 
         $this->dropClassWithPathToInstalledBinary($targetName);
