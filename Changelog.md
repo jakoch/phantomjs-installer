@@ -4,6 +4,14 @@
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [2.1.1-p09] - 2017-08-16
+
+- [Issue #18](https://github.com/jakoch/phantomjs-installer/issues/18): Stop/kill (and restart?) PhantomJS before updating it.
+  - Fixed replacing the binary of a running process by copying the binary to a temporary file, then renaming it.
+- [Issue #41](https://github.com/jakoch/phantomjs-installer/issues/41): 0770 chmod status.
+  - removed const PHANTOMJS_CHMOD and hardcoded `0777 & ~umask()` 
+- Travis: stopped testing on HHVM, added testing on PHP7.1
+
 ## [2.1.1-p08] - 2017-01-10
 
 - [Issue #42](https://github.com/jakoch/phantomjs-installer/issues/42): fix silent TransportExceptions (handle all TransportExceptions with HttpStatusCode != 404)
@@ -66,7 +74,8 @@
 - Initial Release
 - grab version number from explicit commit references, issue #8
 
-[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p08...HEAD
+[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p09...HEAD
+[2.1.1-p08]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p08...2.1.1-p09
 [2.1.1-p08]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p07...2.1.1-p08
 [2.1.1-p07]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p06...2.1.1-p07
 [2.1.1-p06]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p05...2.1.1-p06

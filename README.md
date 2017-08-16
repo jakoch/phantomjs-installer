@@ -25,7 +25,7 @@ To install PhantomJS as a local, per-project dependency to your project, simply 
 ```json
 {
     "require": {
-        "jakoch/phantomjs-installer": "2.1.1-p08"
+        "jakoch/phantomjs-installer": "2.1.1-p09"
     },
     "config": {
         "bin-dir": "bin"
