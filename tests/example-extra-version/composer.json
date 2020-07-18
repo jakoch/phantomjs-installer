@@ -1,6 +1,6 @@
 {
     "require": {
-        "jakoch/phantomjs-installer": "1.9.8"
+        "jakoch/phantomjs-installer": "dev-master"
     },
     "config": {
         "bin-dir": "bin"
@@ -12,5 +12,10 @@
         "post-update-cmd": [
             "PhantomInstaller\\Installer::installPhantomJS"
         ]
+    },
+    "extra": {
+        "jakoch/phantomjs-installer": {
+            "phantomjs-version": "2.1.1"
+        }
     }
 }

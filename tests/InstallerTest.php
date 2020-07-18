@@ -8,7 +8,7 @@ use PhantomInstaller\PhantomBinary;
 /**
  * @backupStaticAttributes enabled
  */
-class InstallerTest extends \PHPUnit_Framework_TestCase
+class InstallerTest extends \PHPUnit\Framework\TestCase
 {
     /** @var Installer */
     protected $object;
@@ -16,8 +16,8 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
     protected $bakEnvVars = array();
 
     protected $bakServerVars = array();
-    
-    protected function setUp()
+
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -30,7 +30,7 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
         $this->bakServerVars = $_SERVER;
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         // Restore $_ENV and $_SERVER
         $_ENV = $this->bakEnvVars;
@@ -157,7 +157,16 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($cdnurlExpected, $cdnurl);
     }
 
-    public function testgetURL()
+    public function testGetVersionFromExtra()
+    {
+        $expectedVersion = '1.9.8';
+        $extraData = array(Installer::PACKAGE_NAME => array('phantomjs-version' => $expectedVersion));
+        $this->setUpForGetCdnUrl($extraData);
+        $version = $this->object->getVersion();
+        $this->assertSame($expectedVersion, $version);
+    }
+
+    public function testGetURL()
     {
         $this->setUpForGetCdnUrl();
         $version = '1.0.0';

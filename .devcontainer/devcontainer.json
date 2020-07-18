@@ -1,0 +1,29 @@
+{
+    "name": "PHP 7 + Composer + phantomjs-installer",
+    "dockerFile": "Dockerfile",
+
+    // Use 'settings' to set *default* container specific settings.json values on container create.
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+
+    // Add the IDs of extensions you want installed when the container is created in the array below.
+    "extensions": [
+        "felixfbecker.php-debug",
+        "felixfbecker.php-intellisense",
+        //"shd101wyy.markdown-preview-enhanced",
+        //"auchenberg.vscode-browser-preview",
+        //"whatwedo.twig",
+        //"mtxr.sqltools"
+    ],
+
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [],
+
+    // Use 'postCreateCommand' to run commands after the container is created.
+    // "postCreateCommand": "php -v",
+
+    // Comment out if you want to use root
+    "remoteUser": "vscode"
+
+}

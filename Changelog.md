@@ -4,12 +4,24 @@
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [3.0.0] - 2020-07-18
+
+- [Issue #47](https://github.com/jakoch/phantomjs-installer/issues/47): Composer v2 support
+- Removed direct mapping of package version to PhantomJS version (!)
+  - The search order for the PhantomJS version changed to:
+    1. $_ENV['PHANTOMJS_VERSION']
+    2. $_SERVER['PHANTOMJS_VERSION']
+    3. composer.json extra section, e.g. `"extra": { "jakoch/phantomjs-installer": { "phantomjs-version": "2.1.1" } }`
+    4. fallback to v2.1.1 (hardcoded latest version)
+- raise PHPUnit version to ^8 (for PHP 7.2-7.4)
+- Travis: stopped testing on PHP 5.x & 7.1, added testing PHP 7.4
+
 ## [2.1.1-p09] - 2017-08-16
 
 - [Issue #18](https://github.com/jakoch/phantomjs-installer/issues/18): Stop/kill (and restart?) PhantomJS before updating it.
   - Fixed replacing the binary of a running process by copying the binary to a temporary file, then renaming it.
 - [Issue #41](https://github.com/jakoch/phantomjs-installer/issues/41): 0770 chmod status.
-  - removed const PHANTOMJS_CHMOD and hardcoded `0777 & ~umask()` 
+  - removed const PHANTOMJS_CHMOD and hardcoded `0777 & ~umask()`
 - Travis: stopped testing on HHVM, added testing on PHP7.1
 
 ## [2.1.1-p08] - 2017-01-10
@@ -25,7 +37,7 @@
 
 ## [2.1.1-p06] - 2016-08-09
 
-- [Issue #34](https://github.com/jakoch/phantomjs-installer/issues/34): Bitbucket downloading issue 
+- [Issue #34](https://github.com/jakoch/phantomjs-installer/issues/34): Bitbucket downloading issue
   - added env and server variable `PHANTOMJS_CDNURL` to set a mirror as download location
 - added `$_SERVER` variable handling for all `$_ENV` vars
   this enables you to use either a server or env var for `PHANTOMJS_PLATFORM`, `PHANTOMJS_BITSIZE` and `PHANTOMJS_CDNURL`
@@ -48,7 +60,7 @@
 
 ## [2.1.1-p02] - 2016-05-12
 
-- [Fix #29](https://github.com/jakoch/phantomjs-installer/issues/29): Invalid version string "^2.1" 
+- [Fix #29](https://github.com/jakoch/phantomjs-installer/issues/29): Invalid version string "^2.1"
 
 ## [2.1.1-p01] - 2016-04-12
 
@@ -74,7 +86,8 @@
 - Initial Release
 - grab version number from explicit commit references, issue #8
 
-[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p09...HEAD
+[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/3.0.0...HEAD
+[3.0.0]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p09...3.0.0
 [2.1.1-p09]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p08...2.1.1-p09
 [2.1.1-p08]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p07...2.1.1-p08
 [2.1.1-p07]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p06...2.1.1-p07

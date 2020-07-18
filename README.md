@@ -8,7 +8,7 @@ phantomjs-installer
 
 A Composer package which installs the PhantomJS binary (Linux, Windows, Mac) into `/bin` of your project.
 
-##### Table of Contents 
+##### Table of Contents
 
 - [Installation](#installation)
 - [How to require a specific version of PhantomJS?](#how-to-require-specific-versions-of-phantomjs)
@@ -25,7 +25,7 @@ To install PhantomJS as a local, per-project dependency to your project, simply 
 ```json
 {
     "require": {
-        "jakoch/phantomjs-installer": "2.1.1-p09"
+        "jakoch/phantomjs-installer": "^3"
     },
     "config": {
         "bin-dir": "bin"
@@ -56,21 +56,20 @@ will be installed into the `/bin` folder and updated alongside the project's Com
 
 ## How to require specific versions of PhantomJS?
 
-1. The version number of the package specifies the PhantomJS version. 
-   When you specify:
-    - `2.1.1-p07`: Composer fetches the 2.1.1-p07 tag of the installer. The installer fetches the 2.1.1 version of PhantomJS.
-    - `2.1.1`: Composer fetches the 2.1.1 tag of the installer. The installer fetches the 2.1.1 version of PhantomJS.
-    - `1.9.8`: Composer fetches the 1.9.8 tag of the installer. The installer fetches the 1.9.8 version of PhantomJS. 
-      - This will also fetch an old installer tag. Please use the syntax for a version alias instead (see item 3 below).
-    - **Important! Please use exact versioning, e.g. `2.1.1-p07`. Do not use a wildcard or caret operator, e.g. `^2.1`, as this will not resolve to the latest patch level version.**
-2. If you specify `dev-master`, the latest version will be fetched.
-  - Composer fetches the latest version of the installer. The installer fetches the latest version of PhantomJS.
-3. You might also specify the PhantomJS version by using a version alias,  e.g. `dev-master as <version>`. 
-  - Composer fetches the latest version of the installer. The installer fetches `<version>` of PhantomJS!
-4. If you specify an explicit commit reference  with a version alias, e.g. `dev-master#<commit-ref> as <version>`.
-  - Composer fetches a specific git commit of the installer. The installer fetches `<version>` of PhantomJS!
-  
-You find more details on the versioning scheme used by the installer in the [comments of issue 39](https://github.com/jakoch/phantomjs-installer/issues/39).
+The environment and server variable `PHANTOMJS_VERSION` enables you specify the version requirement at the time of packaging.
+
+You can also set the `phantomjs-version` in the `extra` section of your `composer.json`:
+
+ ```json
+  "extra": {
+    "jakoch/phantomjs-installer": {
+      "phantomjs-version": "2.1.1"
+    }
+  }
+ ```
+
+The search order for the version is 1) $_ENV, 2) $_SERVER, 3) `composer.json` (extra section), 4) fallback to v2.1.1 (hardcoded latest version).
+
 
 ## How does this work internally?
 
@@ -160,9 +159,9 @@ You might use one of the following mirror URLs as a value for `PHANTOMJS_CDNURL`
 
 This list of mirrors is not complete. If you know another mirror, please don't hesitate to add it here.
 
-The mirror URLs are also not hardcoded, except for the Github URL. 
+The mirror URLs are also not hardcoded, except for the Github URL.
 This enables you to point to any PhantomJS mirror or download folder you like.
-For instance, you could point to the URL of the download folder of your company, where the binaries are stored: 
+For instance, you could point to the URL of the download folder of your company, where the binaries are stored:
 `PHANTOMJS_CDNURL=https://cdn.company.com/downloads/phantomjs/`.
 
 ## Automatic download retrying with version lowering on 404

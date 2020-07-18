@@ -10,8 +10,6 @@
     convertWarningsToExceptions = "true"
     processIsolation            = "false"
     stopOnFailure               = "false"
-    strict                      = "true"
-    syntaxCheck                 = "false"
     verbose                     = "true">
 
   <testsuite name="PhantomJS Installer - Test Suite">

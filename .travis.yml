@@ -1,7 +1,7 @@
 #
 # .travis.yml - configuration file for the travis continuous integration service
 #
-# see http://about.travis-ci.org/docs/user/languages/php for more hints
+# see https://docs.travis-ci.com/user/languages/php/ for more hints
 #
 language: php
 
@@ -12,35 +12,30 @@ cache:
   directory:
     - $HOME/.composer/cache/files
 
-php: [5.5, 5.6, 7.1, 7.2]
+php: [7.2, 7.4]
 
 before_install:
   - composer self-update
   - composer install --no-interaction --prefer-source
 
 script:
-  - phpunit --configuration ./tests/phpunit.xml.dist
+  - vendor/bin/phpunit --configuration ./tests/phpunit.xml.dist
   # tests
-  # require "1.9.8"
-  #- cd "$TRAVIS_BUILD_DIR/tests/example-v1.9.8" && composer install -vvv --profile
-  #- ls -ashF bin
-  #- bin/phantomjs -v
-  #- cd $TRAVIS_BUILD_DIR
-  # require "dev-master"
+  # Using Composer v1
+  # require "dev-master" -> v2.1.1 (hardcoded fallback)
   - cd "$TRAVIS_BUILD_DIR/tests/example-latest-version" && composer install -vvv --profile
   - ls -ashF bin
   - bin/phantomjs -v
-  # require "2.0.0" and lower version automatically to "1.9.8"
-  - cd "$TRAVIS_BUILD_DIR/tests/example-v2.0.0-v1.9.8" && composer install -vvv --profile
+  # Using Composer 2.0-dev snapshot
+  - composer self-update --snapshot
+  - composer --version
+  # require "dev-master" -> v2.1.1 (composer.json's extra section)
+  - cd "$TRAVIS_BUILD_DIR/tests/example-extra-version" && composer install -vvv --profile
   - ls -ashF bin
   - bin/phantomjs -v
-
-notifications:
-  email: false
-  irc:
-    channels:
-      - "irc.freenode.org#koch"
-    use_notice: true
+  # Reminder:
+  # if you define version "2.0.0" in composer.json's extra section,
+  # it should fetch v1.9.8 via retry/auto-lowering.
 
 # reduce commit history of git checkout
 git:

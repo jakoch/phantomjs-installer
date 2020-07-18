@@ -3,7 +3,7 @@
 /*
  * This file is part of the "jakoch/phantomjs-installer" package.
  *
- * Copyright (c) 2013-2017 Jens-André Koch <jakoch@web.de>
+ * Copyright (c) 2013-2020 Jens-André Koch <jakoch@web.de>
  *
  * The content is released under the MIT License. Please view
  * the LICENSE file that was distributed with this source code.
@@ -179,6 +179,23 @@ class Installer
      */
     public function download($targetDir, $version)
     {
+        if (defined('Composer\Composer::RUNTIME_API_VERSION') && version_compare(Composer::RUNTIME_API_VERSION, '2.0', '>=')) {
+            // Composer v2 behavior
+            return $this->downloadUsingComposerVersion2($targetDir, $version);
+        } else {
+            // Composer v1 behavior
+            return $this->downloadUsingComposerVersion1($targetDir, $version);
+        }
+    }
+
+    /**
+     * @param string $targetDir
+     * @param string $version
+     *
+     * @return bool
+     */
+    public function downloadUsingComposerVersion1($targetDir, $version)
+    {
         $io = $this->getIO();
         $downloadManager = $this->getComposer()->getDownloadManager();
         $retries = count($this->getPhantomJsVersions());
@@ -188,6 +205,59 @@ class Installer
 
             try {
                 $downloadManager->download($package, $targetDir, false);
+                return true;
+            } catch (TransportException $e) {
+                if ($e->getStatusCode() === 404) {
+                    $version = $this->getLowerVersion($version);
+                    $io->warning('Retrying the download with a lower version number: "' . $version . '"');
+                } else {
+                    $message = $e->getMessage();
+                    $code = $e->getStatusCode();
+                    $io->error(PHP_EOL . '<error>TransportException: "' . $message . '". HTTP status code: ' . $code . '</error>');
+                    return false;
+                }
+            } catch (\Exception $e) {
+                $message = $e->getMessage();
+                $io->error(PHP_EOL . '<error>While downloading version ' . $version . ' the following error accoured: ' . $message . '</error>');
+                return false;
+            }
+        }
+    }
+
+    /**
+     * @param string $targetDir
+     * @param string $version
+     *
+     * @return bool
+     */
+    public function downloadUsingComposerVersion2($targetDir, $version)
+    {
+        $io = $this->getIO();
+        $composer = $this->getComposer();
+        $downloadManager = $composer->getDownloadManager();
+        $retries = count($this->getPhantomJsVersions());
+
+        while ($retries--) {
+            $package = $this->createComposerInMemoryPackage($targetDir, $version);
+
+            try {
+                $loop = $composer->getLoop();
+                $promise = $downloadManager->download($package, $targetDir);
+                if ($promise) {
+                    $loop->wait(array($promise));
+                }
+                $promise = $downloadManager->prepare('install', $package, $targetDir);
+                if ($promise) {
+                    $loop->wait(array($promise));
+                }
+                $promise = $downloadManager->install($package, $targetDir);
+                if ($promise) {
+                    $loop->wait(array($promise));
+                }
+                $promise = $downloadManager->cleanup('install', $package, $targetDir);
+                if ($promise) {
+                    $loop->wait(array($promise));
+                }
                 return true;
             } catch (TransportException $e) {
                 if ($e->getStatusCode() === 404) {
@@ -271,71 +341,30 @@ class Installer
     /**
      * Returns the PhantomJS version number.
      *
-     * Firstly, we search for a version number in the local repository,
-     * secondly, in the root package.
-     * A version specification of "dev-master#<commit-reference>" is disallowed.
+     * Search order for version number:
+     *  1. $_ENV
+     *  2. $_SERVER
+     *  3. composer.json extra section
+     *  4. fallback to latest version as defined in this file
      *
      * @return string $version Version
      */
     public function getVersion()
     {
-        $composer = $this->getComposer();
-
-        // try getting the version from the local repository
-        $packages = $composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
-        foreach ($packages as $package) {
-            if ($package->getName() === static::PACKAGE_NAME) {
-                $version = $package->getPrettyVersion();
-                break;
-            }
+        if (isset($_ENV['PHANTOMJS_VERSION'])) {
+            return $_ENV['PHANTOMJS_VERSION'];
         }
 
-        // let's take a look at the aliases
-        $aliases = $composer->getLocker()->getAliases();
-        foreach ($aliases as $idx => $alias) {
-            if ($alias['package'] === static::PACKAGE_NAME) {
-                return $alias['alias'];
-            }
+        if (isset($_SERVER['PHANTOMJS_VERSION'])) {
+            return $_SERVER['PHANTOMJS_VERSION'];
         }
 
-        // fallback to the hardcoded latest version, if "dev-master" was set
-        if ($version === 'dev-master') {
-            return $this->getLatestPhantomJsVersion();
+        $extraData = $this->getComposer()->getPackage()->getExtra();
+        if (isset($extraData[static::PACKAGE_NAME]['phantomjs-version'])) {
+            return $extraData[static::PACKAGE_NAME]['phantomjs-version'];
         }
 
-        // grab version from commit-reference, e.g. "dev-master#<commit-ref> as version"
-        if (preg_match('/dev-master#(?:.*)(\d.\d.\d)/i', $version, $matches)) {
-            return $matches[1];
-        }
-
-        // grab version from a Composer patch version tag with a patch level, like "1.9.8-p02"
-        if (preg_match('/(\d.\d.\d)(?:(?:-p\d{2})?)/i', $version, $matches)) {
-            return $matches[1];
-        }
-
-        // let's take a look at the root package
-        if (!empty($version)) {
-            $version = $this->getRequiredVersion($composer->getPackage());
-        }
-
-        return $version;
-    }
-
-    /**
-     * Returns the version for the given package either from the "require" or "require-dev" packages array.
-     *
-     * @param RootPackageInterface $package
-     * @throws \RuntimeException
-     * @return mixed
-     */
-    public function getRequiredVersion(RootPackageInterface $package)
-    {
-        foreach (array($package->getRequires(), $package->getDevRequires()) as $requiredPackages) {
-            if (isset($requiredPackages[static::PACKAGE_NAME])) {
-                return $requiredPackages[static::PACKAGE_NAME]->getPrettyConstraint();
-            }
-        }
-        throw new \RuntimeException('Can not determine required version of ' . static::PACKAGE_NAME);
+        return $this->getLatestPhantomJsVersion();
     }
 
     /**
