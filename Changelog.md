@@ -4,6 +4,10 @@
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [3.0.1] - 2021-09-03
+
+- [Issue #51](https://github.com/jakoch/phantomjs-installer/issues/51): Fix TypeError thrown during install
+
 ## [3.0.0] - 2020-07-18
 
 - [Issue #47](https://github.com/jakoch/phantomjs-installer/issues/47): Composer v2 support
@@ -86,7 +90,8 @@
 - Initial Release
 - grab version number from explicit commit references, issue #8
 
-[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/3.0.0...HEAD
+[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/3.0.1...HEAD
+[3.0.1]: https://github.com/jakoch/phantomjs-installer/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p09...3.0.0
 [2.1.1-p09]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p08...2.1.1-p09
 [2.1.1-p08]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p07...2.1.1-p08

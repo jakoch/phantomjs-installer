@@ -204,7 +204,7 @@ class Installer
             $package = $this->createComposerInMemoryPackage($targetDir, $version);
 
             try {
-                $downloadManager->download($package, $targetDir, false);
+                $downloadManager->download($package, $targetDir, null);
                 return true;
             } catch (TransportException $e) {
                 if ($e->getStatusCode() === 404) {
