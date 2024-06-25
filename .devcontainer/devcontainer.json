@@ -1,29 +1,24 @@
 {
-    "name": "PHP 7 + Composer + phantomjs-installer",
+    "name": "PHP",
     "dockerFile": "Dockerfile",
-
-    // Use 'settings' to set *default* container specific settings.json values on container create.
-    "settings": {
-        "terminal.integrated.shell.linux": "/bin/bash"
+    // config settings you would have in ".vscode/settings.json"
+    "customizations": {
+        "vscode": {
+            // Add the IDs of extensions you want installed when the container is created.
+            "extensions": [
+                // VS Code specific
+                "EditorConfig.EditorConfig",
+                // Asciidoc specific
+                "asciidoctor.asciidoctor-vscode",
+                // Markdown specific
+                "yzhang.markdown-all-in-one",
+                // PHP specific
+                "xdebug.php-pack"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "zsh",
+            }
+        }
     },
-
-    // Add the IDs of extensions you want installed when the container is created in the array below.
-    "extensions": [
-        "felixfbecker.php-debug",
-        "felixfbecker.php-intellisense",
-        //"shd101wyy.markdown-preview-enhanced",
-        //"auchenberg.vscode-browser-preview",
-        //"whatwedo.twig",
-        //"mtxr.sqltools"
-    ],
-
-    // Use 'forwardPorts' to make a list of ports inside the container available locally.
-    // "forwardPorts": [],
-
-    // Use 'postCreateCommand' to run commands after the container is created.
-    // "postCreateCommand": "php -v",
-
-    // Comment out if you want to use root
-    "remoteUser": "vscode"
-
-}
+    "remoteUser": "root"
+  }

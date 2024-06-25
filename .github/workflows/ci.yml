@@ -1,0 +1,74 @@
+name: CI
+
+on: [workflow_dispatch, push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+
+  test:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # https://www.php.net/supported-versions.php
+        version: ['8.1', '8.2', '8.3', '8.4']
+
+    # ubuntu-latest = ubuntu-22.04 (06-2024)
+    # https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md
+    runs-on: ubuntu-24.04
+
+    steps:
+
+      - name: 🤘 Checkout
+        uses: actions/checkout@v4 # https://github.com/actions/checkout
+        with:
+          fetch-depth: 5
+
+      # install location of tools is /usr/local/bin/phpunit
+      - name: 🔽 Setup PHP
+        uses: shivammathur/setup-php@v2 # https://github.com/shivammathur/setup-php
+        with:
+          php-version: ${{matrix.version}}
+          extensions: dom, mbstring, tidy
+          ini-values: memory_limit=-1, error_reporting=-1, display_errors=On
+          tools: composer, phpunit
+
+      - name: 🔽 Setup problem matchers for PHP
+        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+
+      - name: ✅ PHP lint
+        run: find . -path ./vendor -prune -o -type f -name '*.php' ! -name "test_with_parse_error.php" -print0 | xargs -0 -n1 -P4 php -l -n | (! grep -v "No syntax errors detected" )
+
+      - name: 🔴🟢🟢🟢 Test
+        run: /usr/local/bin/phpunit --configuration ./tests/phpunit.xml.dist
+
+      - name: Update Composer
+        run: |
+          composer self-update
+          composer diagnose
+
+      # This tests the installation of the installer using require "dev-main",
+      # along with the installation of the latest version of PhantomJS.
+      - name: Installer "dev-main" installs latest PhantomJS version
+        run: |
+          cd tests/example-latest-version
+          composer install -vvv --profile
+          ls -ashF bin
+          bin/phantomjs -v
+
+      # This tests the installation of the installer using require "dev-main",
+      # along with the installation of a manually specified PhantomJS version "v2.1.1",
+      # as defined in the extra section of composer.json.
+      #
+      # Reminder:
+      # If you define version "2.0.0" in composer.json's extra section,
+      # it should fetch v1.9.8 via retry/auto-lowering, because 2.0.0 doesnt exist.
+      #
+      - name: Installer "dev-main" installs a manually specific PhantomJS version
+        run: |
+          cd tests/example-extra-version
+          composer install -vvv --profile
+          ls -ashF bin
+          bin/phantomjs -v

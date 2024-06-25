@@ -4,6 +4,13 @@
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [3.0.2] - 2024-06-26
+
+- fixed installer tests after branch rename dev-master -> dev-main
+- removed Travis CI config
+- added Github Actions + dependabot config
+- updated Devcontainer and Dockerfile
+
 ## [3.0.1] - 2021-09-03
 
 - [Issue #51](https://github.com/jakoch/phantomjs-installer/issues/51): Fix TypeError thrown during install

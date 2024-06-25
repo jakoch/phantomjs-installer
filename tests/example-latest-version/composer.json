@@ -1,6 +1,6 @@
 {
     "require": {
-        "jakoch/phantomjs-installer": "dev-master"
+        "jakoch/phantomjs-installer": "dev-main"
     },
     "config": {
         "bin-dir": "bin"

@@ -7,14 +7,16 @@
 /.project
 
 # Composer
-/composer.phar
-/composer.lock
+composer.phar
+composer.lock
 /vendor
 
-# Vagrant
-.vagrant
-Vagrantfile
+src/PhantomInstaller/PhantomBinary.php
 
-.idea
+/tests/example-extra-version/bin
+/tests/example-extra-version/vendor
+/tests/example-extra-version/composer.lock
 
-/src/PhantomInstaller/PhantomBinary.php
+/tests/example-latest-version/bin
+/tests/example-latest-version/vendor
+/tests/example-latest-version/composer.lock
