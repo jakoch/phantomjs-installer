@@ -40,9 +40,7 @@ jobs:
         run: find . -path ./vendor -prune -o -type f -name '*.php' ! -name "test_with_parse_error.php" -print0 | xargs -0 -n1 -P4 php -l -n | (! grep -v "No syntax errors detected" )
 
       - name: Update Composer
-        run: |
-          composer self-update
-          composer diagnose
+        run: composer self-update
 
       - name: Install Composer dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
