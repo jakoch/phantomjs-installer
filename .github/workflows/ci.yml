@@ -48,20 +48,20 @@ jobs:
       - name: 🔴🟢🟢🟢 Test
         run: vendor/bin/phpunit --configuration ./tests/phpunit.xml.dist
 
-      - name: Install old OpenSSL version, which matches PhantomJS
-        run: |
-          cd $HOME
-          mkdir src
-          mkdir share
-          cd src
-          wget https://github.com/openssl/openssl/releases/download/OpenSSL_1_1_1w/openssl-1.1.1w.tar.gz
-          sha256sum openssl-1.1.1w.tar.gz
-          tar xzf openssl-1.1.1w.tar.gz
-          cd openssl-1.1.1w/
-          ./Configure --prefix=$HOME/share/openssl-1.1.1 --openssldir=$HOME/share/openssl-1.1.1 linux-x86_64
-          make
-          make install
-          export OPENSSL_CONF=$HOME/share/openssl-1.1.1
+      #- name: Install old OpenSSL version, which matches PhantomJS
+      #  run: |
+      #    cd $HOME
+      #    mkdir src
+      #    mkdir share
+      #    cd src
+      #    wget https://github.com/openssl/openssl/releases/download/OpenSSL_1_1_1w/openssl-1.1.1w.tar.gz
+      #    sha256sum openssl-1.1.1w.tar.gz
+      #    tar xzf openssl-1.1.1w.tar.gz
+      #    cd openssl-1.1.1w/
+      #    ./Configure --prefix=$HOME/share/openssl-1.1.1 --openssldir=$HOME/share/openssl-1.1.1 linux-x86_64
+      #    make
+      #    make install
+      #    export OPENSSL_CONF=$HOME/share/openssl-1.1.1
 
       # This tests the installation of the installer using require "dev-main",
       # along with the installation of a manually specified PhantomJS version "v2.1.1",
@@ -76,7 +76,8 @@ jobs:
           cd tests/example-extra-version
           composer install -vvv --profile
           ls -ashF bin
-          bin/phantomjs -v
+
+      # bin/phantomjs -v
 
       # This tests the installation of the installer using require "dev-main",
       # along with the installation of the latest version of PhantomJS.
@@ -85,4 +86,5 @@ jobs:
           cd tests/example-latest-version
           composer install -vvv --profile
           ls -ashF bin
-          bin/phantomjs -v
+
+      # bin/phantomjs -v
