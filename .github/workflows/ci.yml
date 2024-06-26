@@ -39,13 +39,16 @@ jobs:
       - name: ✅ PHP lint
         run: find . -path ./vendor -prune -o -type f -name '*.php' ! -name "test_with_parse_error.php" -print0 | xargs -0 -n1 -P4 php -l -n | (! grep -v "No syntax errors detected" )
 
-      - name: 🔴🟢🟢🟢 Test
-        run: vendor/bin/phpunit --configuration ./tests/phpunit.xml.dist
-
       - name: Update Composer
         run: |
           composer self-update
           composer diagnose
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: 🔴🟢🟢🟢 Test
+        run: vendor/bin/phpunit --configuration ./tests/phpunit.xml.dist
 
       # This tests the installation of the installer using require "dev-main",
       # along with the installation of the latest version of PhantomJS.
