@@ -3,19 +3,22 @@ phantomjs-installer
 
 [![Latest Stable Version](https://poser.pugx.org/jakoch/phantomjs-installer/version.png)](https://packagist.org/packages/jakoch/phantomjs-installer)
 [![Total Downloads](https://poser.pugx.org/jakoch/phantomjs-installer/d/total.png)](https://packagist.org/packages/jakoch/phantomjs-installer)
-[![Build Status](https://travis-ci.org/jakoch/phantomjs-installer.png)](https://travis-ci.org/jakoch/phantomjs-installer)
+[![Build Status](https://github.com/jakoch/phantomjs-installer/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/jakoch/phantomjs-installer/actions/workflows/ci.yml)
 [![License](https://poser.pugx.org/jakoch/phantomjs-installer/license.png)](https://packagist.org/packages/jakoch/phantomjs-installer)
 
 A Composer package which installs the PhantomJS binary (Linux, Windows, Mac) into `/bin` of your project.
 
 ##### Table of Contents
 
-- [Installation](#installation)
-- [How to require a specific version of PhantomJS?](#how-to-require-specific-versions-of-phantomjs)
-- [How does this work internally?](#how-does-this-work-internally)
-- [How to access the binary easily by using PhantomInstaller\PhantomBinary?](#phantombinary)
-- [How to package for another platform by overriding platform requirements?](#override-platform-requirements)
-- [How to use a Mirror or a custom CDN URL for downloading?](#downloading-from-a-mirror)
+- [phantomjs-installer](#phantomjs-installer)
+        - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [How to require specific versions of PhantomJS?](#how-to-require-specific-versions-of-phantomjs)
+  - [How does this work internally?](#how-does-this-work-internally)
+  - [PhantomBinary](#phantombinary)
+  - [Override platform requirements](#override-platform-requirements)
+  - [Downloading from a mirror](#downloading-from-a-mirror)
+  - [Automatic download retrying with version lowering on 404](#automatic-download-retrying-with-version-lowering-on-404)
 
 ## Installation
 
