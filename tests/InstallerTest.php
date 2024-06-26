@@ -5,10 +5,13 @@ namespace PhantomInstaller\Test;
 use PhantomInstaller\Installer;
 use PhantomInstaller\PhantomBinary;
 
-/**
- * @backupStaticAttributes enabled
- */
-class InstallerTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\BackupGlobals;
+use PHPUnit\Framework\Attributes\BackupStaticProperties;
+
+#[CoversClass(\PhantomInstaller\Installer::class)]
+#[BackupStaticProperties(true)]
+class InstallerTest extends TestCase
 {
     /** @var Installer */
     protected $object;
@@ -63,6 +66,7 @@ class InstallerTest extends \PHPUnit\Framework\TestCase
         $this->markTestSkipped('contribute ?');
     }
 
+    #[CoversClass(\PhantomInstaller\PhantomBinary::class)]
     public function testDropClassWithPathToInstalledBinary()
     {
         $binaryPath = __DIR__ . '/a_fake_phantomjs_binary';
@@ -90,9 +94,8 @@ class InstallerTest extends \PHPUnit\Framework\TestCase
         $mockPackage->method('getExtra')->willReturn($extraConfig);
     }
 
-    /**
-     * @backupGlobals
-     */
+    #[BackupGlobals(true)]
+    #[CoversClass(\PhantomInstaller\Installer::class)]
     public function testCdnUrlTrailingSlash()
     {
         $this->setUpForGetCdnUrl();
@@ -100,12 +103,11 @@ class InstallerTest extends \PHPUnit\Framework\TestCase
         $configuredCdnUrl = 'scheme://host/path'; // without slash
         $_ENV['PHANTOMJS_CDNURL'] = $configuredCdnUrl;
         $cdnurl = $this->object->getCdnUrl($version);
-        $this->assertRegExp('{(?:^|[^/])/$}', $cdnurl, 'CdnUrl should end with one slash.');
+        $this->assertMatchesRegularExpression('{(?:^|[^/])/$}', $cdnurl, 'CdnUrl should end with one slash.');
     }
 
-    /**
-     * @backupGlobals
-     */
+    #[BackupGlobals(true)]
+    #[CoversClass(\PhantomInstaller\Installer::class)]
     public function testSpecialGithubPatternForCdnUrl()
     {
         $this->setUpForGetCdnUrl();
@@ -124,9 +126,7 @@ class InstallerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($configuredCdnUrl, $cdnurl);
     }
 
-    /**
-     * @backupGlobals
-     */
+    #[BackupGlobals(true)]
     public function testGetCdnUrlConfigPrecedence()
     {
         $this->setUpForGetCdnUrl();
@@ -157,6 +157,7 @@ class InstallerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($cdnurlExpected, $cdnurl);
     }
 
+    #[CoversClass(\PhantomInstaller\Installer::class)]
     public function testGetVersionFromExtra()
     {
         $expectedVersion = '1.9.8';
@@ -166,6 +167,7 @@ class InstallerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expectedVersion, $version);
     }
 
+    #[CoversClass(\PhantomInstaller\Installer::class)]
     public function testGetURL()
     {
         $this->setUpForGetCdnUrl();
@@ -174,12 +176,14 @@ class InstallerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(is_string($url));
     }
 
+    #[CoversClass(\PhantomInstaller\Installer::class)]
     public function testGetOS()
     {
         $os = $this->object->getOS();
         $this->assertTrue(is_string($os));
     }
 
+    #[CoversClass(\PhantomInstaller\Installer::class)]
     public function testGetBitSize()
     {
         $bitsize = $this->object->getBitSize();
