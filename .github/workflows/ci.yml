@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         # https://www.php.net/supported-versions.php
-        version: ['8.1', '8.2', '8.3', '8.4']
+        version: ['8.2', '8.3', '8.4']
 
     # ubuntu-latest = ubuntu-22.04 (06-2024)
     # https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md
@@ -58,7 +58,7 @@ jobs:
           sha256sum openssl-1.1.1w.tar.gz
           tar xzf openssl-1.1.1w.tar.gz
           cd openssl-1.1.1w/
-          ./configure --prefix=$HOME/share/openssl-1.1.1 --openssldir=$HOME/share/openssl-1.1.1 linux-x86_64
+          ./Configure --prefix=$HOME/share/openssl-1.1.1 --openssldir=$HOME/share/openssl-1.1.1 linux-x86_64
           make
           make install
           export OPENSSL_CONF=$HOME/share/openssl-1.1.1
