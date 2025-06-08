@@ -4,6 +4,11 @@
 
 - "It was a bright day in April, and the clocks were striking thirteen." - 1984
 
+## [3.0.3] - 2025-06-08
+
+- [Issue #54](https://github.com/jakoch/phantomjs-installer/issues/54): fixed silent error when download fails
+  - downloadUsingComposerVersion1/2 now throw an exception instead of failing silently
+
 ## [3.0.2] - 2024-06-26
 
 - fixed installer tests after branch rename dev-master -> dev-main

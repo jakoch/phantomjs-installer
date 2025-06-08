@@ -214,12 +214,12 @@ class Installer
                     $message = $e->getMessage();
                     $code = $e->getStatusCode();
                     $io->error(PHP_EOL . '<error>TransportException: "' . $message . '". HTTP status code: ' . $code . '</error>');
-                    return false;
+                    throw $e;
                 }
             } catch (\Exception $e) {
                 $message = $e->getMessage();
                 $io->error(PHP_EOL . '<error>While downloading version ' . $version . ' the following error accoured: ' . $message . '</error>');
-                return false;
+                throw $e;
             }
         }
     }
@@ -267,12 +267,12 @@ class Installer
                     $message = $e->getMessage();
                     $code = $e->getStatusCode();
                     $io->error(PHP_EOL . '<error>TransportException: "' . $message . '". HTTP status code: ' . $code . '</error>');
-                    return false;
+                    throw $e;
                 }
             } catch (\Exception $e) {
                 $message = $e->getMessage();
                 $io->error(PHP_EOL . '<error>While downloading version ' . $version . ' the following error accoured: ' . $message . '</error>');
-                return false;
+                throw $e;
             }
         }
     }
