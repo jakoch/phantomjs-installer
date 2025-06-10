@@ -156,9 +156,11 @@ You don't need to set it explicitly. It's used, when `PHANTOMJS_CDNURL` is not s
 **Mirrors**
 
 You might use one of the following mirror URLs as a value for `PHANTOMJS_CDNURL`:
-  - `https://cnpmjs.org/downloads/` - USA, San Mateo (47.88.189.193)
-  - `https://npm.taobao.org/mirrors/phantomjs/` - China, Hangzhou (114.55.80.225)
-  - `https://github.com/Medium/phantomjs/` - USA, San Francisco (192.30.253.113)
+  - `https://cnpmjs.org/downloads/` - USA
+  - `https://npm.taobao.org/mirrors/phantomjs/` - China
+  - `https://github.com/Medium/phantomjs/` - USA
+  - `https://repo1.maven.org/maven2/com/github/klieber/phantomjs/` - USA
+  - `https://mirrors.huaweicloud.com/phantomjs/` - China
 
 This list of mirrors is not complete. If you know another mirror, please don't hesitate to add it here.
 
