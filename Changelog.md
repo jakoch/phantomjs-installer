@@ -102,7 +102,9 @@
 - Initial Release
 - grab version number from explicit commit references, issue #8
 
-[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/3.0.1...HEAD
+[Unreleased]: https://github.com/jakoch/phantomjs-installer/compare/3.0.3...HEAD
+[3.0.3]: https://github.com/jakoch/phantomjs-installer/compare/3.0.2...3.0.3
+[3.0.2]: https://github.com/jakoch/phantomjs-installer/compare/3.0.1...3.0.2
 [3.0.1]: https://github.com/jakoch/phantomjs-installer/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p09...3.0.0
 [2.1.1-p09]: https://github.com/jakoch/phantomjs-installer/compare/2.1.1-p08...2.1.1-p09
