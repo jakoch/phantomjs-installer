@@ -509,7 +509,8 @@ class Installer
     /**
      * Default CDN URL
      */
-    const PHANTOMJS_CDNURL_DEFAULT = 'https://api.bitbucket.org/2.0/repositories/ariya/phantomjs/downloads/';
+    //const PHANTOMJS_CDNURL_DEFAULT = 'https://api.bitbucket.org/2.0/repositories/ariya/phantomjs/downloads/';
+    const PHANTOMJS_CDNURL_DEFAULT = 'https://bitbucket.org/ariya/phantomjs/downloads/';
 
     /**
      * Returns the base URL for downloads.
